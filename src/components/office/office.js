@@ -1,6 +1,8 @@
 import React from 'react';
 
-const calculate = (bay, axis) => axis === 'x' ? bay.x * 270 : bay.y * 270
+const CELL_SIZE = 260    
+
+const calculate = (bay, axis) => axis === 'x' ? bay.x * CELL_SIZE : bay.y * CELL_SIZE
 
 const calculateViewBox = data => {
     const maximus = data && data.reduce((maximus, bay) => {
@@ -11,20 +13,20 @@ const calculateViewBox = data => {
     
     maximus.x = !maximus.x ? 1 : maximus.x 
     
-    return `0 0 ${(maximus.x+1) * 270 + 3} ${(maximus.y+1) * 270 + 3}`
+    return `0 0 ${(maximus.x+1) * CELL_SIZE + 3} ${(maximus.y+1) * CELL_SIZE + 3}`
 }
 
 export default props =>
     <svg viewBox={calculateViewBox(props.data)} style={{ background: 'linear-gradient(to right, #ece9e6, #ffffff)' }}>
         <defs>
             <g id="chair">
-                <rect width="70" height="70" stroke="black" fill="#4d4dff" transform="translate(110 102)" strokeWidth='0.7' rx="20" ry="20" />
-                <rect width="60" height="12" stroke="black" fill="#a5a5a5" transform="translate(114 170)" strokeWidth='0.7' rx="7" ry="7" />
+                <rect width="70" height="70" stroke="black" fill="#1a2980" transform="translate(110 102)" strokeWidth='0.7' rx="20" ry="20" />
+                <rect width="60" height="12" stroke="black" fill="#a5a5a5" transform="translate(114 169)" strokeWidth='0.7' rx="20" ry="20" />
                 <rect width="10" height="40" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.7' }} transform="translate(102 112)" rx="3" ry="3" />
                 <rect width="10" height="40" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.7' }} transform="translate(178 112)" rx="3" ry="3" />
             </g>
             <g id="drawer">
-                <rect width="70" height="100" stroke="black" fill="#a5a5a5" transform="translate(200 38)" strokeWidth='0.7' rx="1" ry="1" />
+                <rect width="70" height="100" stroke="black" fill="#c4c4c4" transform="translate(200 38)" strokeWidth='0.7' rx="1" ry="1" />
                 <rect width="20" height="4" style={{ fill: 'transparent', stroke: 'black', strokeWidth: '2' }} transform="translate(225 141)" rx="1" ry="1" />
                 <rect width="70" height="4" stroke="black" fill="#a5a5a5" transform="translate(200 138)" strokeWidth='0.7' rx="1" ry="1" />
             </g>
@@ -59,8 +61,8 @@ export default props =>
                 <rect width="11" height="4" x="178" y="74" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
             </g>
             <g id="monitor">
-                <rect width="50" height="20" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: 0.7 }} transform="translate(120 23)" rx="1" ry="1" />
-                <rect width="146" height="5" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: 0.7 }} transform="translate(70 30)" rx="1" ry="1" />
+                <rect width="50" height="20" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: 0.7 }} transform="translate(115 23)" rx="1" ry="1" />
+                <rect width="136" height="5" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: 0.7 }} transform="translate(70 30)" rx="1" ry="1" />
             </g>
             <g id="phone">
                 <rect width="45" height="45" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: '0.7' }} transform="translate(247 10)" rx="1" ry="1" />
@@ -81,33 +83,47 @@ export default props =>
                 <line x1="221" y1="75" x2="221" y2="82" style={{ stroke: 'black', strokeWidth: 0.5 }} />
             </g>
             <g id="desk">
-                <rect width="270" height="130" x="1" y="1" style={{ fill: 'white', stroke: 'black' }} stroke-width="1" rx="1" ry="1" />
+                <rect width="260" height="104" x="1" y="1" style={{ fill: 'white', stroke: 'black' }} stroke-width="1" rx="1" ry="1" />
             </g>
             <g id="cpu">
                 <rect width="40" height="78" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: 0.7 }} transform="translate(10 10)" rx="1" ry="1" />
             </g>
-            <g id="myDesk_down">
-                <use href="#chair" transform="translate(-10 19)" />
-                <use href="#drawer" transform="translate(-10 2)" />
+            <g id="myDesk_south">
+                <use href="#chair" transform="translate(-20 -7)" />
+                <use href="#drawer" transform="translate(-20 -28)" />
                 <use href="#desk" transform="translate(0 0)" />
-                <use href="#keyboard" transform="translate(-10 21)" />
-                <use href="#mouse" transform="translate(-18 21)" />
+                <use href="#keyboard" transform="translate(-20 -4)" />
+                <use href="#mouse" transform="translate(-28 -4)" />
                 <use href="#monitor" transform="translate(-10 0)" />
-                <use href="#phone" transform="translate(-30 0)" />
+                <use href="#phone" transform="translate(-40 0)" />
                 <use href="#cpu" transform="translate(0 0)" />
+
+                {/*<rect width="260" height="260" style={{fill:'transparent',strokeWidth:1,stroke:'blue'}} />*/}
             </g>
-            <g id="myDesk_up">
-                <use href="#myDesk_down" transform="rotate(-180 136 136)" />
+            <g id="myDesk_north">
+                <use href="#myDesk_south" transform={`rotate(-180 ${CELL_SIZE/2 + 1} ${CELL_SIZE/2 + 1})`} />
             </g>
-            <g id="myDesk_right">
-                <use href="#myDesk_down" transform="rotate(-90 136 136)" />
+            <g id="myDesk_east">
+                <use href="#myDesk_south" transform={`rotate(-90 ${CELL_SIZE/2 + 1} ${CELL_SIZE/2 + 1})`} />
             </g>
-            <g id="myDesk_left">
-                <use href="#myDesk_right" transform="rotate(-180 136 136)" />
+            <g id="myDesk_west">
+                <use href="#myDesk_east" transform={`rotate(-180 ${CELL_SIZE/2 + 1} ${CELL_SIZE/2 + 1})`} />
+            </g>
+            <g id="myDesk_north-east">
+                <use href="#myDesk_east" transform={`rotate(-45 ${CELL_SIZE/2 - 38} ${CELL_SIZE/2 - 93})`} />
+            </g>
+            <g id="myDesk_south-west">
+                <use href="#myDesk_north-east" transform={`rotate(-180 ${CELL_SIZE/2 + 1} ${CELL_SIZE/2 + 1})`} />
+            </g>
+            <g id="myDesk_south-east">
+                <use href="#myDesk_east" transform={`rotate(45 ${CELL_SIZE/2 - 38} ${CELL_SIZE/2 + 95})`} />
+            </g>
+            <g id="myDesk_north-west">
+                <use href="#myDesk_south-east" transform={`rotate(-180 ${CELL_SIZE/2 + 1} ${CELL_SIZE/2 + 1})`} />
             </g>
         </defs>
 
         {
-            props.data && props.data.map(bay => (<use href={`#myDesk_${bay.type}`} x={calculate(bay, 'x')} y={calculate(bay, 'y')} />))
+            props.data && props.data.map(bay => (<use href={`#myDesk_${bay.chairPosition}`} x={calculate(bay, 'x')} y={calculate(bay, 'y')} />))
         }
     </svg>
