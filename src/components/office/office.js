@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CELL_SIZE = 260    
+const CELL_SIZE = 260
 
 const calculate = (bay, axis) => axis === 'x' ? bay.x * CELL_SIZE : bay.y * CELL_SIZE
 
@@ -9,11 +9,25 @@ const calculateViewBox = data => {
         maximus.x = Math.max(maximus.x, bay.x)
         maximus.y = Math.max(maximus.y, bay.y)
         return maximus
-    }, {x:0, y:0})
-    
-    maximus.x = !maximus.x ? 1 : maximus.x 
-    
-    return `0 0 ${(maximus.x+1) * CELL_SIZE + 3} ${(maximus.y+1) * CELL_SIZE + 3}`
+    }, { x: 0, y: 0 })
+
+    maximus.x = !maximus.x ? 1 : maximus.x
+
+    return `0 0 ${(maximus.x + 1) * CELL_SIZE + 3} ${(maximus.y + 1) * CELL_SIZE + 3}`
+}
+
+const getEquipmentInfo = bay => {
+    const equipments = bay.equipments || {}
+    const names = Object.keys(equipments)
+    if (names.length) {
+        return names.reduce((msg, name) => {
+            msg += msg ? "\n" : ""
+            msg += `[${name.toUpperCase()}] ${equipments[name]}`
+            return msg
+        }, "")
+    }
+
+    return ""
 }
 
 export default props =>
@@ -61,7 +75,7 @@ export default props =>
                 <rect width="11" height="4" x="178" y="74" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
             </g>
             <g id="monitor">
-                <rect width="50" height="20" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: 0.7 }} transform="translate(115 23)" rx="1" ry="1" />
+                <rect width="50" height="20" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: 0.7 }} transform="translate(112 23)" rx="1" ry="1" />
                 <rect width="136" height="5" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: 0.7 }} transform="translate(70 30)" rx="1" ry="1" />
             </g>
             <g id="phone">
@@ -83,7 +97,7 @@ export default props =>
                 <line x1="221" y1="75" x2="221" y2="82" style={{ stroke: 'black', strokeWidth: 0.5 }} />
             </g>
             <g id="desk">
-                <rect width="260" height="104" x="1" y="1" style={{ fill: 'white', stroke: 'black' }} stroke-width="1" rx="1" ry="1" />
+                <rect width="260" height="104" x="1" y="1" style={{ fill: 'white', stroke: 'black', strokeWidth: 1 }} rx="1" ry="1" />
             </g>
             <g id="cpu">
                 <rect width="40" height="78" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: 0.7 }} transform="translate(10 10)" rx="1" ry="1" />
@@ -101,29 +115,32 @@ export default props =>
                 {/*<rect width="260" height="260" style={{fill:'transparent',strokeWidth:1,stroke:'blue'}} />*/}
             </g>
             <g id="myDesk_north">
-                <use href="#myDesk_south" transform={`rotate(-180 ${CELL_SIZE/2 + 1} ${CELL_SIZE/2 + 1})`} />
+                <use href="#myDesk_south" transform={`rotate(-180 ${CELL_SIZE / 2 + 1} ${CELL_SIZE / 2 + 1})`} />
             </g>
             <g id="myDesk_east">
-                <use href="#myDesk_south" transform={`rotate(-90 ${CELL_SIZE/2 + 1} ${CELL_SIZE/2 + 1})`} />
+                <use href="#myDesk_south" transform={`rotate(-90 ${CELL_SIZE / 2 + 1} ${CELL_SIZE / 2 + 1})`} />
             </g>
             <g id="myDesk_west">
-                <use href="#myDesk_east" transform={`rotate(-180 ${CELL_SIZE/2 + 1} ${CELL_SIZE/2 + 1})`} />
+                <use href="#myDesk_east" transform={`rotate(-180 ${CELL_SIZE / 2 + 1} ${CELL_SIZE / 2 + 1})`} />
             </g>
             <g id="myDesk_north-east">
-                <use href="#myDesk_east" transform={`rotate(-45 ${CELL_SIZE/2 - 38} ${CELL_SIZE/2 - 93})`} />
+                <use href="#myDesk_east" transform={`rotate(-45 ${CELL_SIZE / 2 - 38} ${CELL_SIZE / 2 - 93})`} />
             </g>
             <g id="myDesk_south-west">
-                <use href="#myDesk_north-east" transform={`rotate(-180 ${CELL_SIZE/2 + 1} ${CELL_SIZE/2 + 1})`} />
+                <use href="#myDesk_north-east" transform={`rotate(-180 ${CELL_SIZE / 2 + 1} ${CELL_SIZE / 2 + 1})`} />
             </g>
             <g id="myDesk_south-east">
-                <use href="#myDesk_east" transform={`rotate(45 ${CELL_SIZE/2 - 38} ${CELL_SIZE/2 + 95})`} />
+                <use href="#myDesk_east" transform={`rotate(45 ${CELL_SIZE / 2 - 38} ${CELL_SIZE / 2 + 95})`} />
             </g>
             <g id="myDesk_north-west">
-                <use href="#myDesk_south-east" transform={`rotate(-180 ${CELL_SIZE/2 + 1} ${CELL_SIZE/2 + 1})`} />
+                <use href="#myDesk_south-east" transform={`rotate(-180 ${CELL_SIZE / 2 + 1} ${CELL_SIZE / 2 + 1})`} />
             </g>
         </defs>
 
         {
-            props.data && props.data.map(bay => (<use href={`#myDesk_${bay.chairPosition}`} x={calculate(bay, 'x')} y={calculate(bay, 'y')} />))
+            props.data && props.data.map(bay => 
+            (<use key={`key_${bay.chairPosition}_${bay.x}_${bay.y}`} href={`#myDesk_${bay.chairPosition}`} x={calculate(bay, 'x')} y={calculate(bay, 'y')} >
+                <title>{getEquipmentInfo(bay)}</title>
+            </use>))
         }
     </svg>
