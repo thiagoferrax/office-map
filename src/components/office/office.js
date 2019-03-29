@@ -35,9 +35,10 @@ export default class OfficeMap extends Component {
             return maximus
         }, { x: 0, y: 0 })
 
-        maximus.x = !maximus.x ? 1 : maximus.x
+        const minHorizontalSize = this.props.minHorizontalSize || 1 
+        maximus.x = Math.max(minHorizontalSize, maximus.x)
 
-        return `0 0 ${(maximus.x + 1) * CELL_SIZE + 5} ${(maximus.y + 1) * CELL_SIZE + 5}`
+        return `0 0 ${(maximus.x + 1) * CELL_SIZE + 2} ${(maximus.y + 1) * CELL_SIZE + 2}`
     })
 
     getEquipmentInfo = desk => {
@@ -68,7 +69,6 @@ export default class OfficeMap extends Component {
     }
 
     render() {
-        console.log('render...')
         return (<svg viewBox={this.calculateViewBox(this.props.data)} style={{ background: 'linear-gradient(to right, #ece9e6, #ffffff)' }}>
             <defs>
                 <g id="chair">
