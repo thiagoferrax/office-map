@@ -44,8 +44,10 @@ export default class OfficeMap extends Component {
     getEquipmentInfo = desk => {
         const equipments = desk.equipments || []
         return equipments.reduce((message, equipment) => {
-            message += message ? "\n" : ""
-            message += `[${equipment.name.toUpperCase()}] ${equipment.specification}`
+            if(equipment.name && equipment.specification) {
+                message += message ? "\n" : ""
+                message += `[${equipment.name.toUpperCase()}] ${equipment.specification}`
+            }
             return message
         }, "")
     }
