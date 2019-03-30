@@ -25,47 +25,47 @@ class Example extends Component {
     const data = [
       {
         id: 1,
-        chairPosition: 'south', x: 0, y: 0,
-        equipments: {
-          cpu: 'Dual core 2.4 GHz, 16 GB RAM, 256 GB HD',
-          monitor: 'HP V197 18.5-inch',
-          keyboard: 'HP Ultrathin Wireless Keyboard',
-          phone: 'Cisco Phone IP 7960G/7940G',
-          chair: '817L Kare Ergonomic Office Chair',
-          mouse: 'HP USB 2 Button Optical Mouse'
-        },
+        chairDirection: 'south', x: 0, y: 0,
+        equipments: [
+          { name: 'cpu', specification: 'Dual core 2.4 GHz, 16 GB RAM, 256 GB HD' },
+          { name: 'monitor', specification: 'HP V197 18.5-inch' },
+          { name: 'keyboard', specification: 'HP Ultrathin Wireless Keyboard' },
+          { name: 'phone', specification: 'Cisco Phone IP 7960G/7940G' },
+          { name: 'chair', specification: '817L Kare Ergonomic Office Chair' },
+          { name: 'mouse', specification: 'HP USB 2 Button Optical Mouse' }
+        ],
       },
       {
         id: 2,
-        chairPosition: 'south', x: 1, y: 0,
-        equipments: {
-          cpu: 'Dual core 2.4 GHz, 16 GB RAM, 256 GB HD',
-          monitor: 'HP V197 18.5-inch',
-          keyboard: 'HP Ultrathin Wireless Keyboard',
-          phone: 'Cisco Phone IP 7960G/7940G',
-          chair: '817L Kare Ergonomic Office Chair',
-          mouse: 'HP USB 2 Button Optical Mouse'
-        }
+        chairDirection: 'south', x: 1, y: 0,
+        equipments: [
+          { name: 'cpu', specification: 'Dual core 2.4 GHz, 16 GB RAM, 256 GB HD' },
+          { name: 'monitor', specification: 'HP V197 18.5-inch' },
+          { name: 'keyboard', specification: 'HP Ultrathin Wireless Keyboard' },
+          { name: 'phone', specification: 'Cisco Phone IP 7960G/7940G' },
+          { name: 'chair', specification: '817L Kare Ergonomic Office Chair' },
+          { name: 'mouse', specification: 'HP USB 2 Button Optical Mouse' }
+        ],
       },
-      { id: 3, chairPosition: 'south', x: 2, y: 0 },
-      { id: 4, chairPosition: 'south', x: 3, y: 0 },
-      { id: 5, chairPosition: 'west', x: 0, y: 1 },
-      { id: 6, chairPosition: 'east', x: 1, y: 1 },
+      { id: 3, chairDirection: 'south', x: 2, y: 0 },
+      { id: 4, chairDirection: 'south', x: 3, y: 0 },
+      { id: 5, chairDirection: 'west', x: 0, y: 1 },
+      { id: 6, chairDirection: 'east', x: 1, y: 1 },
       {
-        id: 7, chairPosition: 'north-west', x: 2, y: 1,
-        equipments: {
-          cpu: 'Dual core 2.4 GHz, 8 GB RAM, 512 GB HD',
-          monitor: 'HP V197 18.5-inch',
-          keyboard: 'HP Ultrathin Wireless Keyboard',
-          phone: 'Cisco Phone IP 7960G/7940G',
-          chair: '817L Kare Ergonomic Office Chair'
-        }
+        id: 7, chairDirection: 'north-west', x: 2, y: 1,
+        equipments: [
+          { name: 'cpu', specification: 'Dual core 2.4 GHz, 8 GB RAM, 512 GB HD' },
+          { name: 'monitor', specification: 'HP V197 18.5-inch' },
+          { name: 'keyboard', specification: 'HP Ultrathin Wireless Keyboard' },
+          { name: 'phone', specification: 'Cisco Phone IP 7960G/7940G' },
+          { name: 'chair', specification: '817L Kare Ergonomic Office Chair' },
+        ]
       },
-      { id: 8, chairPosition: 'north-east', x: 3, y: 1 },
-      { id: 9, chairPosition: 'west', x: 0, y: 2 },
-      { id: 10, chairPosition: 'east', x: 1, y: 2 },
-      { id: 11, chairPosition: 'south-west', x: 2, y: 2 },
-      { id: 12, chairPosition: 'south-east', x: 3, y: 2 }
+      { id: 8, chairDirection: 'north-east', x: 3, y: 1 },
+      { id: 9, chairDirection: 'west', x: 0, y: 2 },
+      { id: 10, chairDirection: 'east', x: 1, y: 2 },
+      { id: 11, chairDirection: 'south-west', x: 2, y: 2 },
+      { id: 12, chairDirection: 'south-east', x: 3, y: 2 }
     ]
     return (<OfficeMap data={data} onSelect={deskId => console.log('The desk selected was ' + deskId)} />)
   }

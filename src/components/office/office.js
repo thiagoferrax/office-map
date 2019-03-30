@@ -42,17 +42,12 @@ export default class OfficeMap extends Component {
     })
 
     getEquipmentInfo = desk => {
-        const equipments = desk.equipments || {}
-        const names = Object.keys(equipments)
-        if (names.length) {
-            return names.reduce((msg, name) => {
-                msg += msg ? "\n" : ""
-                msg += `[${name.toUpperCase()}] ${equipments[name]}`
-                return msg
-            }, "")
-        }
-
-        return ""
+        const equipments = desk.equipments || []
+        return equipments.reduce((message, equipment) => {
+            message += message ? "\n" : ""
+            message += `[${equipment.name.toUpperCase()}] ${equipment.specification}`
+            return message
+        }, "")
     }
 
     selectDesk = (event) => {
@@ -176,7 +171,7 @@ export default class OfficeMap extends Component {
             {
                 this.props.data && this.props.data.map(desk =>
                     (<use id={desk.id}
-                        key={`key_${desk.chairPosition}_${desk.x}_${desk.y}`} href={`#myDesk_${desk.chairPosition}`}
+                        key={`key_${desk.chairDirection}_${desk.x}_${desk.y}`} href={`#myDesk_${desk.chairDirection}`}
                         x={this.calculate(desk, 'x')} y={this.calculate(desk, 'y')}
                         className="clickable">
                         <title>{this.getEquipmentInfo(desk)}</title>
