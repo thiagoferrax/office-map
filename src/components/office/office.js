@@ -4,7 +4,7 @@ import memoize from 'memoize-one'
 
 const CELL_SIZE = 260
 
-const INITIAL_STATE = {}
+const INITIAL_STATE = { selectedElement: undefined, offset: { x: 0, y: 0 } }
 
 export default class OfficeMap extends Component {
     constructor(props) {
@@ -15,7 +15,12 @@ export default class OfficeMap extends Component {
     componentDidMount() {
         $("document").ready(
             () => {
-                $(".clickable").bind("click", (event) => { this.selectDesk(event) })
+                $(".clickable").bind("dblclick", (event) => { this.selectDesk(event) })
+
+                $(".draggable").bind("mousedown", (event) => { this.startDrag(event) })
+                $(".draggable").bind("mousemove", (event) => { this.drag(event) })
+                $(".draggable").bind("mouseup", (event) => { this.endDrag(event) })
+                //$(".draggable").bind("mouseleave", (event) => { this.endDrag(event) })
             }
         )
     }
@@ -35,7 +40,7 @@ export default class OfficeMap extends Component {
             return maximus
         }, { x: 0, y: 0 })
 
-        const minHorizontalSize = this.props.minHorizontalSize || 1 
+        const minHorizontalSize = this.props.minHorizontalSize || 1
         maximus.x = Math.max(minHorizontalSize, maximus.x)
 
         return `0 0 ${(maximus.x + 1) * CELL_SIZE + 2} ${(maximus.y + 1) * CELL_SIZE + 2}`
@@ -44,7 +49,7 @@ export default class OfficeMap extends Component {
     getEquipmentInfo = desk => {
         const equipments = desk.equipments || []
         return equipments.reduce((message, equipment) => {
-            if(equipment.name && equipment.specification) {
+            if (equipment.name && equipment.specification) {
                 message += message ? "\n" : ""
                 message += `[${equipment.name.toUpperCase()}] ${equipment.specification}`
             }
@@ -65,8 +70,57 @@ export default class OfficeMap extends Component {
         }
     }
 
+    startDrag = (event) => {
+        const selectedElement = event.target
+
+        if (selectedElement.classList.contains('draggable')) {
+            let offset = this.getMousePosition(event)
+            offset.x -= parseFloat(selectedElement.getAttributeNS(null, "x"))
+            offset.y -= parseFloat(selectedElement.getAttributeNS(null, "y"))
+
+            this.setState({ selectedElement, offset })
+        }
+    }
+
+    endDrag(event) {
+        const selectedElement = this.state.selectedElement
+        if (selectedElement) {
+            var coord = this.getMousePosition(event)
+
+            let x = parseFloat(coord.x)
+            let y = parseFloat(coord.y)
+
+            x = parseInt(x / CELL_SIZE) * CELL_SIZE
+            y = parseInt(y / CELL_SIZE) * CELL_SIZE
+
+            selectedElement.setAttributeNS(null, "x", x);
+            selectedElement.setAttributeNS(null, "y", y);
+
+            this.setState(INITIAL_STATE)
+        }
+    }
+
+    getMousePosition(event) {
+        var CTM = document.getElementById("svg").getScreenCTM();
+        return {
+            x: (event.clientX - CTM.e) / CTM.a,
+            y: (event.clientY - CTM.f) / CTM.d
+        }
+    }
+
+    drag(event) {
+        const selectedElement = this.state.selectedElement
+        const offset = this.state.offset
+        if (selectedElement) {
+            event.preventDefault()
+            var coord = this.getMousePosition(event);
+            selectedElement.setAttributeNS(null, "x", coord.x - offset.x);
+            selectedElement.setAttributeNS(null, "y", coord.y - offset.y);
+        }
+    }
+
     render() {
-        return (<svg viewBox={this.calculateViewBox(this.props.data)} style={{ background: 'linear-gradient(to right, #ece9e6, #ffffff)' }}>
+        return (<svg id="svg" viewBox={this.calculateViewBox(this.props.data)} style={{ background: 'linear-gradient(to right, #ece9e6, #ffffff)' }}>
             <defs>
                 <g id="chair">
                     <rect width="70" height="70" stroke="black" fill="#1a2980" transform="translate(110 102)" strokeWidth='0.7' rx="20" ry="20" />
@@ -172,14 +226,13 @@ export default class OfficeMap extends Component {
 
             {
                 this.props.data && this.props.data.map(desk =>
-                    (<use id={desk.id}
+                    (<use id={desk.id} style={{ cursor: 'move' }}
                         key={`key_${desk.chairDirection}_${desk.x}_${desk.y}`} href={`#myDesk_${desk.chairDirection}`}
                         x={this.calculate(desk, 'x')} y={this.calculate(desk, 'y')}
-                        className="clickable">
+                        className="clickable draggable">
                         <title>{this.getEquipmentInfo(desk)}</title>
                     </use>))
             }
-
             <rect id="selectableRect" x={0} y={0} width="260" height="260" style={{ fill: 'rgb(0,123,255, 0.2)', strokeWidth: 2, stroke: 'rgb(0,123,255)', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
         </svg>)
     }
