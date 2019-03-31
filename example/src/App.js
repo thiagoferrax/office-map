@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 import OfficeMap from 'office-map'
 
-const INITIAL_STATE = { deskId: undefined }
+const INITIAL_STATE = { desk: undefined }
 export default class App extends Component {
   constructor(props) {
     super(props)
@@ -56,13 +56,20 @@ export default class App extends Component {
       { id: 12, chairDirection: 'south-east', x: 3, y: 2 }
     ]
 
+    const desk = this.state.desk
     return (
       <div style={{ width: 1200, margin: "10px auto" }}>
         <h1>OfficeMap Example</h1>
-        {this.state.deskId ? (<h2>The desk selected was: {this.state.deskId}</h2>) : ''}
+        {
+          (desk && desk.x >= 0 && desk.y  >= 0) ? 
+            (<h2>The desk {desk.id} moved to: {desk.x}, {desk.y}</h2>) : 
+            (desk && desk.id ? <h2>The desk {desk.id} was selected</h2> : '')}
         <hr />
         <br />
-        <OfficeMap data={data} onSelect={deskId => this.setState({ deskId })} />
+        <OfficeMap 
+          data={data} 
+          onSelect={desk => this.setState({ desk })} 
+          onDrag={desk => this.setState({ desk })}/>
       </div>
     )
   }
