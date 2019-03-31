@@ -55,6 +55,9 @@ export default class OfficeMap extends Component {
         const minHorizontalSize = this.props.minHorizontalSize || 1
         maximus.x = Math.max(minHorizontalSize, maximus.x)
 
+        const minVerticalSize = this.props.minVerticalSize || 1
+        maximus.y = Math.max(minVerticalSize, maximus.x)
+
         const width = (maximus.x + 1) * CELL_SIZE + 2
         const height = (maximus.y + 1) * CELL_SIZE + 2
 
