@@ -81,11 +81,7 @@ export default class OfficeMap extends Component {
         const selectedElement = event.target
 
         if (selectedElement.classList.contains('draggable')) {
-
-            const svg = document.getElementsByTagName("svg")[0]
-            const selectableRect = document.getElementById("selectableRect")
-
-            svg.insertBefore(selectedElement, svg.lastChild)
+            $(`#${selectedElement.id}`).insertBefore("#selectableRect")
 
             let offset = this.getMousePosition(event)
             offset.x -= parseFloat(selectedElement.getAttributeNS(null, "x"))
@@ -112,7 +108,7 @@ export default class OfficeMap extends Component {
             if (this.props.onMove) {
                 const id = event.target.id
                 const desk = this.props.data.filter(d => d.id === +id)[0]
-                this.props.onMove({ ...desk, x, y })
+                this.props.onMove({ ...desk, x: parseInt(x / CELL_SIZE), y: parseInt(y / CELL_SIZE) })
             }
 
             this.setState(INITIAL_STATE)
@@ -275,8 +271,6 @@ export default class OfficeMap extends Component {
                 }
 
                 <rect id="selectableRect" x={0} y={0} width="260" height="260" style={{ fill: 'rgb(0,123,255, 0.2)', strokeWidth: 2, stroke: 'rgb(0,123,255)', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
-
-                <rect x="0" y="0" width="0" height="0" />
             </svg>)
     }
 }
