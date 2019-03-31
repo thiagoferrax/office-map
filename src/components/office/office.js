@@ -12,7 +12,7 @@ export default class OfficeMap extends Component {
         this.state = INITIAL_STATE
     }
 
-    componentDidMount() {
+    addDeskEvents() {
         $("document").ready(
             () => {
                 if (this.props.onSelect) {
@@ -25,6 +25,16 @@ export default class OfficeMap extends Component {
                 }
             }
         )
+    }
+
+    componentDidMount() {
+        this.addDeskEvents()
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.data !== this.props.data) {
+            this.addDeskEvents()
+        }
     }
 
     unSelectDesk() {
