@@ -18,7 +18,7 @@ export default class OfficeMap extends Component {
                 if (this.props.onSelect) {
                     $(".clickable").bind("dblclick", (event) => { this.selectDesk(event) })
                 }
-                if (this.props.onDrag) {
+                if (this.props.onMove) {
                     $(".draggable").bind("mousedown", (event) => { this.startDrag(event) })
                     $(".draggable").bind("mousemove", (event) => { this.drag(event) })
                     $(".draggable").bind("mouseup", (event) => { this.endDrag(event) })
@@ -71,7 +71,9 @@ export default class OfficeMap extends Component {
             $('#selectableRect').attr('x', x)
             $('#selectableRect').attr('y', y)
 
-            this.props.onSelect({ id: event.target.id })
+            const id = event.target.id
+            const desk = this.props.data.filter(d => d.id === +id)[0]
+            this.props.onSelect(desk)
         }
     }
 
@@ -79,6 +81,12 @@ export default class OfficeMap extends Component {
         const selectedElement = event.target
 
         if (selectedElement.classList.contains('draggable')) {
+
+            const svg = document.getElementsByTagName("svg")[0]
+            const selectableRect = document.getElementById("selectableRect")
+            
+            svg.insertBefore(selectedElement, selectableRect)
+
             let offset = this.getMousePosition(event)
             offset.x -= parseFloat(selectedElement.getAttributeNS(null, "x"))
             offset.y -= parseFloat(selectedElement.getAttributeNS(null, "y"))
@@ -100,6 +108,12 @@ export default class OfficeMap extends Component {
 
             selectedElement.setAttributeNS(null, "x", x)
             selectedElement.setAttributeNS(null, "y", y)
+
+            if (this.props.onMove) {
+                const id = event.target.id
+                const desk = this.props.data.filter(d => d.id === +id)[0]
+                this.props.onMove({ ...desk, x, y })
+            }
 
             this.setState(INITIAL_STATE)
         }
@@ -138,15 +152,6 @@ export default class OfficeMap extends Component {
 
             selectedElement.setAttributeNS(null, "x", dx)
             selectedElement.setAttributeNS(null, "y", dy)
-
-            const x = parseInt(dx / CELL_SIZE)
-            const y = parseInt(dy / CELL_SIZE)
-
-            console.log(x, y)
-
-            if (this.props.onDrag) {
-                this.props.onDrag({ id: event.target.id, x, y })
-            }
         }
     }
 
@@ -261,8 +266,8 @@ export default class OfficeMap extends Component {
 
                 {
                     this.props.data && this.props.data.map(desk =>
-                        (<use id={desk.id} style={this.props.onDrag ? { cursor: 'move' } : {}}
-                            key={`key_${desk.chairDirection}_${desk.x}_${desk.y}`} href={`#myDesk_${desk.chairDirection}`}
+                        (<use id={desk.id} style={this.props.onMove ? { cursor: 'move' } : {}}
+                            key={`key_${desk.id}`} href={`#myDesk_${desk.chairDirection}`}
                             x={this.calculate(desk, 'x')} y={this.calculate(desk, 'y')}
                             className="clickable draggable">
                             <title>{this.getEquipmentInfo(desk)}</title>
