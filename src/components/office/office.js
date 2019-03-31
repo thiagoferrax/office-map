@@ -84,8 +84,8 @@ export default class OfficeMap extends Component {
 
             const svg = document.getElementsByTagName("svg")[0]
             const selectableRect = document.getElementById("selectableRect")
-            
-            svg.insertBefore(selectedElement, selectableRect)
+
+            svg.insertBefore(selectedElement, svg.lastChild)
 
             let offset = this.getMousePosition(event)
             offset.x -= parseFloat(selectedElement.getAttributeNS(null, "x"))
@@ -273,7 +273,10 @@ export default class OfficeMap extends Component {
                             <title>{this.getEquipmentInfo(desk)}</title>
                         </use>))
                 }
+
                 <rect id="selectableRect" x={0} y={0} width="260" height="260" style={{ fill: 'rgb(0,123,255, 0.2)', strokeWidth: 2, stroke: 'rgb(0,123,255)', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
+
+                <rect x="0" y="0" width="0" height="0" />
             </svg>)
     }
 }
