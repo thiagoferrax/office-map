@@ -262,7 +262,7 @@ export default class OfficeMap extends Component {
 
                 {
                     this.props.data && this.props.data.map(desk =>
-                        (<use id={desk.id} style={this.props.onMove ? { cursor: 'move' } : {}}
+                        (<use id={desk.id} style={this.props.onMove ? { cursor: 'grab' } : {}}
                             key={`key_${desk.id}`} href={`#myDesk_${desk.chairDirection}`}
                             x={this.calculate(desk, 'x')} y={this.calculate(desk, 'y')}
                             className="clickable draggable">
