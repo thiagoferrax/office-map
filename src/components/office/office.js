@@ -4,7 +4,7 @@ import memoize from 'memoize-one'
 
 const CELL_SIZE = 260
 
-const INITIAL_STATE = { selectedElement: undefined, offset: { x: 0, y: 0 } }
+const INITIAL_STATE = { selectedElement: undefined, offset: { x: 0, y: 0 }, screenCTM: undefined }
 
 export default class OfficeMap extends Component {
     constructor(props) {
@@ -29,11 +29,21 @@ export default class OfficeMap extends Component {
 
     componentDidMount() {
         this.addDeskEvents()
+
+        const svg = document.getElementById("svg")
+        var screenCTM = svg.getScreenCTM()
+
+        this.setState({screenCTM})
     }
 
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.data !== this.props.data) {
             this.addDeskEvents()
+
+            const svg = document.getElementById("svg")
+            var screenCTM = svg.getScreenCTM()
+    
+            this.setState({screenCTM})
         }
     }
 
@@ -86,6 +96,7 @@ export default class OfficeMap extends Component {
 
             const id = event.target.id
             const desk = this.props.data.filter(d => d.id === +id)[0]
+           
             this.props.onSelect(desk)
         }
     }
@@ -124,12 +135,12 @@ export default class OfficeMap extends Component {
                 this.props.onMove({ ...desk, x: parseInt(x / CELL_SIZE), y: parseInt(y / CELL_SIZE) })
             }
 
-            this.setState(INITIAL_STATE)
+            this.setState({selectedElement: INITIAL_STATE.selectedElement, offset: INITIAL_STATE.offset})
         }
     }
 
     getMousePosition(event) {
-        var CTM = document.getElementById("svg").getScreenCTM()
+        const CTM = this.state.screenCTM
         return {
             x: (event.clientX - CTM.e) / CTM.a,
             y: (event.clientY - CTM.f) / CTM.d
@@ -142,7 +153,6 @@ export default class OfficeMap extends Component {
         if (selectedElement) {
             event.preventDefault()
             var coord = this.getMousePosition(event)
-
             let dx = coord.x - offset.x
             let dy = coord.y - offset.y
 
@@ -161,6 +171,8 @@ export default class OfficeMap extends Component {
 
             selectedElement.setAttributeNS(null, "x", dx)
             selectedElement.setAttributeNS(null, "y", dy)
+
+            this.setState({ selectedElement })
         }
     }
 
