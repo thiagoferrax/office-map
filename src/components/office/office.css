@@ -1,0 +1,20 @@
+.tooltip ul {
+    padding-left: 0;
+    list-style:none;
+  }
+
+  .tooltip-inner {
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    min-width: 350px;
+    border: 1px solid black;
+    background: #171717 !important;
+    /* If max-width does not work, try using width instead */
+    text-align: left !important;
+    width: 350px; 
+  }
+
+  .arrow {
+    border: 2px solid transparent !important;
+  }

@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 import $ from 'jquery'
 import memoize from 'memoize-one'
+import './office.css'
+import 'bootstrap'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 const CELL_SIZE = 260
 
-const INITIAL_STATE = { selectedElement: undefined, offset: { x: 0, y: 0 } }
+const INITIAL_STATE = { selectedElement: undefined, offset: { x: 0, y: 0 }, title: 'to be defined' }
 
 export default class OfficeMap extends Component {
     constructor(props) {
@@ -23,8 +26,31 @@ export default class OfficeMap extends Component {
                     $(".draggable").bind("mousemove", (event) => { this.drag(event) })
                     $(".draggable").bind("mouseup", (event) => { this.endDrag(event) })
                 }
+                $('[data-toggle="tooltip"]').tooltip()
+
+                this.props.data && this.props.data.map(desk => {
+                    const equipmentsInfo = this.getEquipmentInfo(desk)
+                    console.log('equipmentsInfo', equipmentsInfo)
+                    if(equipmentsInfo) {
+                        this.prepareTooltip(desk.id, equipmentsInfo)}
+                    }
+                    
+                )
             }
         )
+    }
+
+    prepareTooltip(id, message) {
+        const element = $(`#${id}`) 
+        console.log(element)
+        
+        element.tooltip({
+            title: message,
+            html: true,
+            placement: 'left',
+            container: 'body',
+            delay: { "show": 300, "hide": 100 }
+        })
     }
 
     componentDidMount() {
@@ -66,13 +92,17 @@ export default class OfficeMap extends Component {
 
     getEquipmentInfo = desk => {
         const equipments = desk.equipments || []
-        return equipments.reduce((message, equipment) => {
+        let equipmentsInfo = equipments.reduce((message, equipment) => {
             if (equipment.name && equipment.specification) {
-                message += message ? "\n" : ""
-                message += `[${equipment.name.toUpperCase()}] ${equipment.specification}`
+                message += message ? "" : `<h5><strong>Desk ${desk.id}</strong></h5><ul>`
+                message += `<li><strong>${equipment.name.toUpperCase()}</strong> - ${equipment.specification}</li>`
             }
+
             return message
         }, "")
+
+        equipmentsInfo += equipmentsInfo ? '</ul>' : `<h6>Desk ${desk.id}</h6>` 
+        return equipmentsInfo
     }
 
     selectDesk = (event) => {
@@ -281,8 +311,9 @@ export default class OfficeMap extends Component {
                         (<use id={desk.id} style={this.props.onMove ? { cursor: 'grab' } : {}}
                             key={`key_${desk.id}`} href={`#myDesk_${desk.chairDirection}`}
                             x={this.calculate(desk, 'x')} y={this.calculate(desk, 'y')}
-                            className="clickable draggable">
-                            <title>{this.getEquipmentInfo(desk)}</title>
+                            className="clickable draggable tooltipable">
+                            
+                            {this.prepareTooltip(desk.id, this.getEquipmentInfo(desk))}
                         </use>))
                 }
 
