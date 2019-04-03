@@ -3,6 +3,7 @@ import $ from 'jquery'
 import memoize from 'memoize-one'
 import './office.css'
 import 'bootstrap'
+import 'bootstrap/dist/css/bootstrap.css'
 
 const CELL_SIZE = 260
 
