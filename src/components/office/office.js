@@ -3,6 +3,7 @@ import $ from 'jquery'
 import memoize from 'memoize-one'
 import './office.css'
 import 'bootstrap'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 const CELL_SIZE = 260
 
@@ -93,7 +94,7 @@ export default class OfficeMap extends Component {
         const equipments = desk.equipments || []
         let equipmentsInfo = equipments.reduce((message, equipment) => {
             if (equipment.name && equipment.specification) {
-                message += message ? "" : `<strong>DESK ${desk.id}</strong><ul>`
+                message += message ? "" : `<h6><strong>DESK ${desk.id}</strong></h6><ul>`
                 message += `<li><strong>${equipment.name.toUpperCase()}</strong> - ${equipment.specification}</li>`
             }
 

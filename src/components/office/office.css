@@ -1,31 +1,18 @@
-.deskTitle{
-  display: flex;
-  flex-direction: column;
-  align-content: center !important;
-  text-align: center !important;
-  padding-left: 15px;  
-}
-
-.tooltip ul {
+  .tooltip ul {
     padding-left: 0px;
     list-style:none;
   }
 
   .tooltip-inner {
-    padding-left: 15px;
-    padding-top: 15px;
     display: flex;
     flex-direction: column;
     align-content: flex-start;
     min-width: 350px;
+    width: 350px; 
     border: 1px solid black;
-    background: #171717 !important;
-    /* If max-width does not work, try using width instead */
     text-align: left !important;
     color: white !important;
-    width: 350px; 
-    font-size: 14px;
-    opacity:.9;
+    opacity: 1;
     filter:alpha(opacity=80)
   }
 
