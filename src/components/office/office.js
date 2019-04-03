@@ -101,7 +101,7 @@ export default class OfficeMap extends Component {
             return message
         }, "")
 
-        equipmentsInfo += equipmentsInfo ? '</ul>' : `<h6>Desk ${desk.id}</h6>` 
+        equipmentsInfo += equipmentsInfo ? '</ul>' : `<h5>Desk ${desk.id}</h5>` 
         return equipmentsInfo
     }
 
