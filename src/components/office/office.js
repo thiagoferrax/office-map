@@ -4,7 +4,7 @@ import memoize from 'memoize-one'
 
 const CELL_SIZE = 260
 
-const INITIAL_STATE = { selectedElement: undefined, offset: { x: 0, y: 0 }, viewBox: undefined}
+const INITIAL_STATE = { selectedElement: undefined, offset: { x: 0, y: 0 }, viewBox: undefined }
 
 export default class OfficeMap extends Component {
     constructor(props) {
@@ -13,8 +13,9 @@ export default class OfficeMap extends Component {
     }
 
     componentWillMount() {
-        const viewBox = this.calculateViewBox(this.props.data)
-        this.setState({viewBox})
+        const viewBox = 
+            OfficeMap.calculateViewBox(this.props.data, this.props.minHorizontalSize, this.props.minVerticalSize)
+        this.setState({ viewBox })
     }
 
 
@@ -28,7 +29,7 @@ export default class OfficeMap extends Component {
                     $(".draggable").bind("mousedown", (event) => { this.startDrag(event) })
                     $(".draggable").bind("mousemove", (event) => { this.drag(event) })
                     $(".draggable").bind("mouseup", (event) => { this.endDrag(event) })
-                }                
+                }
             }
         )
     }
@@ -37,14 +38,23 @@ export default class OfficeMap extends Component {
         this.addDeskEvents()
     }
 
-    
+
 
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.data !== this.props.data) {
             this.addDeskEvents()
 
-            const viewBox = this.calculateViewBox(this.props.data)
-            this.setState({viewBox})
+
+        }
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.data !== prevState.data) {
+            const viewBox = 
+                OfficeMap.calculateViewBox(nextProps.data, nextProps.minHorizontalSize, nextProps.minVerticalSize)
+            return { viewBox }
+        } else {
+            return null
         }
     }
 
@@ -56,18 +66,15 @@ export default class OfficeMap extends Component {
 
     calculate = (desk, axis) => axis === 'x' ? desk.x * CELL_SIZE : desk.y * CELL_SIZE
 
-    calculateViewBox = memoize(data => {
+    static calculateViewBox = memoize((data, minHorizontalSize, minVerticalSize) => {
         const maximus = data && data.reduce((maximus, desk) => {
             maximus.x = Math.max(maximus.x, desk.x)
             maximus.y = Math.max(maximus.y, desk.y)
             return maximus
         }, { x: 0, y: 0 })
 
-        const minHorizontalSize = this.props.minHorizontalSize || 1
-        maximus.x = Math.max(minHorizontalSize, maximus.x)
-
-        const minVerticalSize = this.props.minVerticalSize || 1
-        maximus.y = Math.max(minVerticalSize, maximus.y)
+        maximus.x = Math.max(minHorizontalSize || 1, maximus.x)
+        maximus.y = Math.max(minVerticalSize || 1, maximus.y)
 
         const width = (maximus.x + 1) * CELL_SIZE + 2
         const height = (maximus.y + 1) * CELL_SIZE + 2
@@ -139,7 +146,7 @@ export default class OfficeMap extends Component {
                 this.props.onMove({ ...desk, x: parseInt(x / CELL_SIZE), y: parseInt(y / CELL_SIZE) })
             }
 
-            this.setState({selectedElement: undefined, offset: { x: 0, y: 0 }})
+            this.setState({ selectedElement: undefined, offset: { x: 0, y: 0 } })
         }
     }
 
@@ -296,7 +303,7 @@ export default class OfficeMap extends Component {
                             key={`key_${desk.id}`} href={`#myDesk_${desk.chairDirection}`}
                             x={this.calculate(desk, 'x')} y={this.calculate(desk, 'y')}
                             className="clickable draggable tooltipable">
-                            
+
                             <title>{this.getEquipmentInfo(desk)}</title>
                         </use>))
                 }
