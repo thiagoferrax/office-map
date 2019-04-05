@@ -9,48 +9,16 @@ const INITIAL_STATE = { selectedElement: undefined, offset: { x: 0, y: 0 }, view
 export default class OfficeMap extends Component {
     constructor(props) {
         super(props)
-        this.state = INITIAL_STATE
-    }
 
-    componentWillMount() {
-        const viewBox = 
+        const viewBox =
             OfficeMap.calculateViewBox(this.props.data, this.props.minHorizontalSize, this.props.minVerticalSize)
-        this.setState({ viewBox })
-    }
 
-
-    addDeskEvents() {
-        $("document").ready(
-            () => {
-                if (this.props.onSelect) {
-                    $(".clickable").bind("dblclick", (event) => { this.selectDesk(event) })
-                }
-                if (this.props.onMove) {
-                    $(".draggable").bind("mousedown", (event) => { this.startDrag(event) })
-                    $(".draggable").bind("mousemove", (event) => { this.drag(event) })
-                    $(".draggable").bind("mouseup", (event) => { this.endDrag(event) })
-                }
-            }
-        )
-    }
-
-    componentDidMount() {
-        this.addDeskEvents()
-    }
-
-
-
-    componentDidUpdate(prevProps, prevState) {
-        if (prevProps.data !== this.props.data) {
-            this.addDeskEvents()
-
-
-        }
+        this.state = { ...INITIAL_STATE, viewBox }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.data !== prevState.data) {
-            const viewBox = 
+            const viewBox =
                 OfficeMap.calculateViewBox(nextProps.data, nextProps.minHorizontalSize, nextProps.minVerticalSize)
             return { viewBox }
         } else {
@@ -140,13 +108,13 @@ export default class OfficeMap extends Component {
             selectedElement.setAttributeNS(null, "x", x)
             selectedElement.setAttributeNS(null, "y", y)
 
+            this.setState({ selectedElement: undefined })
+
             if (this.props.onMove) {
                 const id = event.target.id
                 const desk = this.props.data.filter(d => d.id === +id)[0]
                 this.props.onMove({ ...desk, x: parseInt(x / CELL_SIZE), y: parseInt(y / CELL_SIZE) })
             }
-
-            this.setState({ selectedElement: undefined, offset: { x: 0, y: 0 } })
         }
     }
 
@@ -163,32 +131,17 @@ export default class OfficeMap extends Component {
         const selectedElement = this.state.selectedElement
         const offset = this.state.offset
         if (selectedElement) {
-            event.preventDefault()
             var coord = this.getMousePosition(event)
             let dx = coord.x - offset.x
             let dy = coord.y - offset.y
 
-            // const viewBox = document.getElementById("svg").getBBox()
-
-            // const bbox = selectedElement.getBBox()
-            // const minX = viewBox.x - bbox.x
-            // const maxX = viewBox.x + viewBox.width - bbox.x - bbox.width
-            // const minY = viewBox.y - bbox.y
-            // const maxY = viewBox.y + viewBox.height - bbox.y - bbox.height
-
-            // if (dx < minX) { dx = minX }
-            // else if (dx > maxX) { dx = maxX }
-            // if (dy < minY) { dy = minY }
-            // else if (dy > maxY) { dy = maxY }
-
             selectedElement.setAttributeNS(null, "x", dx)
             selectedElement.setAttributeNS(null, "y", dy)
-
-            this.setState({ selectedElement })
         }
     }
 
     render() {
+        console.log('render...')
         const viewBox = this.state.viewBox
         return (
             <svg id="svg"
@@ -299,11 +252,15 @@ export default class OfficeMap extends Component {
 
                 {
                     this.props.data && this.props.data.map(desk =>
-                        (<use id={desk.id} style={this.props.onMove ? { cursor: 'grab' } : {}}
+                        (<use id={desk.id} 
+                            style={this.props.onMove ? { cursor: 'grab' } : {}}
                             key={`key_${desk.id}`} href={`#myDesk_${desk.chairDirection}`}
                             x={this.calculate(desk, 'x')} y={this.calculate(desk, 'y')}
-                            className="clickable draggable tooltipable">
-
+                            className="clickable draggable"
+                            onMouseDown={event => this.startDrag(event)}
+                            onMouseMove={event => this.drag(event)}
+                            onMouseUp={event => this.endDrag(event)}
+                            onDoubleClick={event => this.selectDesk(event)}>
                             <title>{this.getEquipmentInfo(desk)}</title>
                         </use>))
                 }
