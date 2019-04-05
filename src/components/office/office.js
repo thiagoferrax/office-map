@@ -4,9 +4,12 @@ import memoize from 'memoize-one'
 
 const CELL_SIZE = 260
 
-const INITIAL_STATE = { selectedElement: undefined, offset: { x: 0, y: 0 }, viewBox: undefined }
+const INITIAL_STATE = { selectedElement: undefined, offset: { x: 0, y: 0 }, viewBox: undefined, screenCTM: undefined }
 
 export default class OfficeMap extends Component {
+
+    teste = '1'
+
     constructor(props) {
         super(props)
 
@@ -31,8 +34,6 @@ export default class OfficeMap extends Component {
         $('#selectableRect').attr('x', 0)
         $('#selectableRect').attr('y', 0)
     }
-
-    calculate = (desk, axis) => axis === 'x' ? desk.x * CELL_SIZE : desk.y * CELL_SIZE
 
     static calculateViewBox = memoize((data, minHorizontalSize, minVerticalSize) => {
         const maximus = data && data.reduce((maximus, desk) => {
@@ -83,15 +84,13 @@ export default class OfficeMap extends Component {
     startDrag = (event) => {
         const selectedElement = event.target
 
-        if (selectedElement.classList.contains('draggable')) {
-            $(`#${selectedElement.id}`).insertBefore("#selectableRect")
+        $(`#${selectedElement.id}`).insertBefore("#selectableRect")
 
-            let offset = this.getMousePosition(event)
-            offset.x -= parseFloat(selectedElement.getAttributeNS(null, "x"))
-            offset.y -= parseFloat(selectedElement.getAttributeNS(null, "y"))
+        let offset = this.getMousePosition(event)
+        offset.x -= selectedElement.getAttributeNS(null, "x")
+        offset.y -= selectedElement.getAttributeNS(null, "y")
 
-            this.setState({ selectedElement, offset })
-        }
+        this.setState({ selectedElement, offset })
     }
 
     endDrag(event) {
@@ -99,11 +98,11 @@ export default class OfficeMap extends Component {
         if (selectedElement) {
             var coord = this.getMousePosition(event)
 
-            let x = parseFloat(coord.x)
-            let y = parseFloat(coord.y)
+            const xPosition = parseInt(coord.x / CELL_SIZE)
+            const yPosition = parseInt(coord.y / CELL_SIZE)
 
-            x = parseInt(x / CELL_SIZE) * CELL_SIZE
-            y = parseInt(y / CELL_SIZE) * CELL_SIZE
+            let x = xPosition * CELL_SIZE
+            let y = yPosition * CELL_SIZE
 
             selectedElement.setAttributeNS(null, "x", x)
             selectedElement.setAttributeNS(null, "y", y)
@@ -113,17 +112,20 @@ export default class OfficeMap extends Component {
             if (this.props.onMove) {
                 const id = event.target.id
                 const desk = this.props.data.filter(d => d.id === +id)[0]
-                this.props.onMove({ ...desk, x: parseInt(x / CELL_SIZE), y: parseInt(y / CELL_SIZE) })
+                this.props.onMove({ ...desk, x: xPosition, y: yPosition })
             }
         }
     }
 
     getMousePosition(event) {
-        const svg = document.getElementById("svg")
-        var CTM = svg.getScreenCTM()
+        let screenCTM = this.state.screenCTM
+        if (!screenCTM) {
+            screenCTM = document.getElementById("svg").getScreenCTM()
+            this.setState({ screenCTM })
+        }
         return {
-            x: (event.clientX - CTM.e) / CTM.a,
-            y: (event.clientY - CTM.f) / CTM.d
+            x: (event.clientX - screenCTM.e) / screenCTM.a,
+            y: (event.clientY - screenCTM.f) / screenCTM.d
         }
     }
 
@@ -141,7 +143,6 @@ export default class OfficeMap extends Component {
     }
 
     render() {
-        console.log('render...')
         const viewBox = this.state.viewBox
         return (
             <svg id="svg"
@@ -252,10 +253,13 @@ export default class OfficeMap extends Component {
 
                 {
                     this.props.data && this.props.data.map(desk =>
-                        (<use id={desk.id} 
+                        (<use 
+                            id={desk.id}
                             style={this.props.onMove ? { cursor: 'grab' } : {}}
-                            key={`key_${desk.id}`} href={`#myDesk_${desk.chairDirection}`}
-                            x={this.calculate(desk, 'x')} y={this.calculate(desk, 'y')}
+                            key={`key_${desk.id}`} 
+                            href={`#myDesk_${desk.chairDirection}`}
+                            x={desk.x * CELL_SIZE} 
+                            y={desk.y * CELL_SIZE}
                             className="clickable draggable"
                             onMouseDown={event => this.startDrag(event)}
                             onMouseMove={event => this.drag(event)}
