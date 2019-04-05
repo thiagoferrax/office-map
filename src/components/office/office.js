@@ -4,7 +4,7 @@ import memoize from 'memoize-one'
 
 const CELL_SIZE = 260
 
-const INITIAL_STATE = { selectedElement: undefined, offset: { x: 0, y: 0 }, viewBox: undefined, screenCTM: undefined }
+const INITIAL_STATE = { selectedElement: undefined, offset: { x: 0, y: 0 }, viewBox: undefined, svg: undefined }
 
 export default class OfficeMap extends Component {
 
@@ -118,11 +118,12 @@ export default class OfficeMap extends Component {
     }
 
     getMousePosition(event) {
-        let screenCTM = this.state.screenCTM
-        if (!screenCTM) {
-            screenCTM = document.getElementById("svg").getScreenCTM()
-            this.setState({ screenCTM })
+        let svg = this.state.svg
+        if (!svg) {
+            svg = document.getElementById("svg")
+            this.setState({ svg })
         }
+        let screenCTM = svg.getScreenCTM()        
         return {
             x: (event.clientX - screenCTM.e) / screenCTM.a,
             y: (event.clientY - screenCTM.f) / screenCTM.d
