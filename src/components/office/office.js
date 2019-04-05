@@ -4,13 +4,19 @@ import memoize from 'memoize-one'
 
 const CELL_SIZE = 260
 
-const INITIAL_STATE = { selectedElement: undefined, offset: { x: 0, y: 0 }}
+const INITIAL_STATE = { selectedElement: undefined, offset: { x: 0, y: 0 }, viewBox: undefined}
 
 export default class OfficeMap extends Component {
     constructor(props) {
         super(props)
         this.state = INITIAL_STATE
     }
+
+    componentWillMount() {
+        const viewBox = this.calculateViewBox(this.props.data)
+        this.setState({viewBox})
+    }
+
 
     addDeskEvents() {
         $("document").ready(
@@ -31,9 +37,14 @@ export default class OfficeMap extends Component {
         this.addDeskEvents()
     }
 
+    
+
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.data !== this.props.data) {
             this.addDeskEvents()
+
+            const viewBox = this.calculateViewBox(this.props.data)
+            this.setState({viewBox})
         }
     }
 
@@ -128,7 +139,7 @@ export default class OfficeMap extends Component {
                 this.props.onMove({ ...desk, x: parseInt(x / CELL_SIZE), y: parseInt(y / CELL_SIZE) })
             }
 
-            this.setState(INITIAL_STATE)
+            this.setState({selectedElement: undefined, offset: { x: 0, y: 0 }})
         }
     }
 
@@ -171,7 +182,7 @@ export default class OfficeMap extends Component {
     }
 
     render() {
-        const viewBox = this.calculateViewBox(this.props.data)
+        const viewBox = this.state.viewBox
         return (
             <svg id="svg"
                 viewBox={`${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`}
