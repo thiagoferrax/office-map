@@ -8,8 +8,6 @@ const INITIAL_STATE = { selectedElement: undefined, offset: { x: 0, y: 0 }, view
 
 export default class OfficeMap extends Component {
 
-    teste = '1'
-
     constructor(props) {
         super(props)
 
@@ -123,10 +121,17 @@ export default class OfficeMap extends Component {
             svg = document.getElementById("svg")
             this.setState({ svg })
         }
-        let screenCTM = svg.getScreenCTM()        
+
+        let pt = svg.createSVGPoint()
+  
+        pt.x = event.clientX;
+        pt.y = event.clientY;
+
+        let svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+
         return {
-            x: (event.clientX - screenCTM.e) / screenCTM.a,
-            y: (event.clientY - screenCTM.f) / screenCTM.d
+            x: svgP.x,
+            y: svgP.y
         }
     }
 
