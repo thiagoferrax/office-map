@@ -12,7 +12,9 @@ export default class OfficeMap extends Component {
         super(props)
 
         const viewBox =
-            OfficeMap.calculateViewBox(this.props.data, this.props.minHorizontalSize, this.props.minVerticalSize)
+            OfficeMap.calculateViewBox(this.props.data, 
+                this.props.minHorizontalSize, 
+                this.props.minVerticalSize)
 
         this.state = { ...INITIAL_STATE, viewBox }
     }
@@ -20,7 +22,9 @@ export default class OfficeMap extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.data !== prevState.data) {
             const viewBox =
-                OfficeMap.calculateViewBox(nextProps.data, nextProps.minHorizontalSize, nextProps.minVerticalSize)
+                OfficeMap.calculateViewBox(nextProps.data, 
+                    nextProps.minHorizontalSize, 
+                    nextProps.minVerticalSize)
             return { viewBox }
         } else {
             return null
@@ -68,21 +72,28 @@ export default class OfficeMap extends Component {
             const x = event.target.x.baseVal.value
             const y = event.target.y.baseVal.value
 
-            $('#selectableRect').css('visibility', 'visible')
-            $('#selectableRect').attr('x', x)
-            $('#selectableRect').attr('y', y)
+            const xRect = $('#selectableRect').attr('x')
+            const yRect = $('#selectableRect').attr('y')
+            const visibility = $('#selectableRect').css('visibility')
 
-            const id = event.target.id
-            const desk = this.props.data.filter(d => d.id === +id)[0]
-
-            this.props.onSelect(desk)
+            if(x === +xRect && y === +yRect && visibility === 'visible') {
+                this.unSelectDesk()
+            } else {
+                $('#selectableRect').css('visibility', 'visible')
+                $('#selectableRect').attr('x', x)
+                $('#selectableRect').attr('y', y)
+              
+                const desk = this.props.data.filter(d => d.id === +event.target.id)[0]
+    
+                this.props.onSelect(desk)
+            }
         }
     }
 
     startDrag = (event) => {
         const selectedElement = event.target
 
-        $(`#${selectedElement.id}`).insertBefore("#selectableRect")
+        $(`#${selectedElement.id}`).insertBefore("#svgLastElement")
 
         let offset = this.getMousePosition(event)
 
@@ -121,8 +132,27 @@ export default class OfficeMap extends Component {
                 const id = event.target.id
                 const desk = this.props.data.filter(d => d.id === +id)[0]
                 this.props.onMove({ ...desk, x: xPosition, y: yPosition })
-            } else if (this.props.onSelect){
-                this.selectDesk(event)
+
+                if (this.props.onSelect) {
+                    const x = parseInt($('#selectableRect').attr('x') / CELL_SIZE)
+                    const y = parseInt($('#selectableRect').attr('y') / CELL_SIZE)
+
+                    if (x === xPositionBefore && y === yPositionBefore) {
+                        this.unSelectDesk()
+                    }
+                }
+
+            } else if (this.props.onSelect) {
+                const x = parseInt($('#selectableRect').attr('x') / CELL_SIZE)
+                const y = parseInt($('#selectableRect').attr('y') / CELL_SIZE)
+                const visibility = $('#selectableRect').css('visibility')
+
+                if (x === xPositionBefore && y === yPositionBefore
+                    && visibility === 'visible') {
+                    this.unSelectDesk()
+                } else {
+                    this.selectDesk(event)
+                }
             }
         }
     }
@@ -288,6 +318,8 @@ export default class OfficeMap extends Component {
 
                 {this.showEditMode()}
 
+                <rect id="selectableRect" x={0} y={0} width="260" height="260" style={{ fill: 'rgb(0,123,255, 0.2)', strokeWidth: 2, stroke: 'rgb(0,123,255)', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
+
                 {
                     this.props.data && this.props.data.map(desk =>
                         (<use
@@ -306,7 +338,7 @@ export default class OfficeMap extends Component {
                         </use>))
                 }
 
-                <rect id="selectableRect" x={0} y={0} width="260" height="260" style={{ fill: 'rgb(0,123,255, 0.2)', strokeWidth: 2, stroke: 'rgb(0,123,255)', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
+                <rect id="svgLastElement" x={0} y={0} width="0" height="0" />
 
             </svg>)
     }

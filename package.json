@@ -1,6 +1,6 @@
 {
   "name": "office-map",
-  "version": "1.0.35",
+  "version": "1.0.36",
   "description": "Get a graphical react component that can create an office map to control key equipment information.",
   "author": "thiagoferrax",
   "license": "MIT",
