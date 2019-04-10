@@ -4,7 +4,7 @@ import memoize from 'memoize-one'
 
 const CELL_SIZE = 260
 
-const INITIAL_STATE = { selectedElement: undefined, offset: { x: 0, y: 0 }, viewBox: undefined, svg: undefined }
+const INITIAL_STATE = { selectedElement: undefined, offset: { x: 0, y: 0 }, viewBox: undefined, svg: undefined, xPosition: undefined, yPosition: undefined }
 
 export default class OfficeMap extends Component {
 
@@ -85,10 +85,15 @@ export default class OfficeMap extends Component {
         $(`#${selectedElement.id}`).insertBefore("#selectableRect")
 
         let offset = this.getMousePosition(event)
+
+        const xPosition = parseInt(offset.x / CELL_SIZE)
+        const yPosition = parseInt(offset.y / CELL_SIZE)
+
         offset.x -= selectedElement.getAttributeNS(null, "x")
         offset.y -= selectedElement.getAttributeNS(null, "y")
 
-        this.setState({ selectedElement, offset })
+
+        this.setState({ selectedElement, offset, xPosition, yPosition })
     }
 
     endDrag(event) {
@@ -105,9 +110,14 @@ export default class OfficeMap extends Component {
             selectedElement.setAttributeNS(null, "x", x)
             selectedElement.setAttributeNS(null, "y", y)
 
-            this.setState({ selectedElement: undefined })
+            const xPositionBefore = this.state.xPosition
+            const yPositionBefore = this.state.yPosition
 
-            if (this.props.onMove) {
+            this.setState({ selectedElement: undefined, xPosition: undefined, yPosition: undefined })
+
+            if (this.props.onMove &&
+                (xPosition !== xPositionBefore ||
+                    yPosition !== yPositionBefore)) {
                 const id = event.target.id
                 const desk = this.props.data.filter(d => d.id === +id)[0]
                 this.props.onMove({ ...desk, x: xPosition, y: yPosition })
@@ -123,7 +133,7 @@ export default class OfficeMap extends Component {
         }
 
         let pt = svg.createSVGPoint()
-  
+
         pt.x = event.clientX;
         pt.y = event.clientY;
 
@@ -259,18 +269,18 @@ export default class OfficeMap extends Component {
 
                 {
                     this.props.data && this.props.data.map(desk =>
-                        (<use 
+                        (<use
                             id={desk.id}
                             style={this.props.onMove ? { cursor: 'grab' } : {}}
-                            key={`key_${desk.id}`} 
+                            key={`key_${desk.id}`}
                             href={`#myDesk_${desk.chairDirection}`}
-                            x={desk.x * CELL_SIZE} 
+                            x={desk.x * CELL_SIZE}
                             y={desk.y * CELL_SIZE}
                             className="clickable draggable"
-                            onMouseDown={event => this.startDrag(event)}
-                            onMouseMove={event => this.drag(event)}
-                            onMouseUp={event => this.endDrag(event)}
-                            onDoubleClick={event => this.selectDesk(event)}>
+                            onMouseDown={this.props.onMove ? event => this.startDrag(event) : () => { }}
+                            onMouseMove={this.props.onMove ? event => this.drag(event) : () => { }}
+                            onMouseUp={this.props.onMove ? event => this.endDrag(event) : () => { }}
+                            onClick={this.props.onSelect ? event => this.selectDesk(event) : () => { }}>
                             <title>{this.getEquipmentInfo(desk)}</title>
                         </use>))
                 }
