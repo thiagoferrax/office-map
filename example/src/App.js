@@ -69,7 +69,8 @@ export default class App extends Component {
         <OfficeMap 
           data={data} 
           onSelect={desk => this.setState({ desk })} 
-          onMove={desk => this.setState({ desk })}/>
+          onMove={desk => this.setState({ desk })}
+          editMode={true} />
       </div>
     )
   }
