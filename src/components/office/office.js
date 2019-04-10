@@ -158,6 +158,23 @@ export default class OfficeMap extends Component {
         }
     }
 
+    showEditMode() {
+        const lines = []
+
+        if (this.props.editMode) {
+            const viewBox = this.state.viewBox
+            for (let i = 0; i < (viewBox.height / CELL_SIZE); i++) {
+                lines.push(<line x1={0} y1={i * CELL_SIZE + 1} x2={viewBox.width} y2={i * CELL_SIZE + 1} style={{ stroke: '#1a2980', strokeWidth: 1 }} strokeDasharray="5,5" />)
+            }
+
+            for (let i = 0; i < (viewBox.width / CELL_SIZE); i++) {
+                lines.push(<line x1={i * CELL_SIZE + 1} y1="0" x2={i * CELL_SIZE + 1} y2={viewBox.height} style={{ stroke: '#1a2980', strokeWidth: 1 }} strokeDasharray="5,5" />)
+            }
+        }
+
+        return lines;
+    }
+
     render() {
         const viewBox = this.state.viewBox
         return (
@@ -267,6 +284,8 @@ export default class OfficeMap extends Component {
                     </g>
                 </defs>
 
+                {this.showEditMode()}
+
                 {
                     this.props.data && this.props.data.map(desk =>
                         (<use
@@ -286,6 +305,7 @@ export default class OfficeMap extends Component {
                 }
 
                 <rect id="selectableRect" x={0} y={0} width="260" height="260" style={{ fill: 'rgb(0,123,255, 0.2)', strokeWidth: 2, stroke: 'rgb(0,123,255)', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
+
             </svg>)
     }
 }
