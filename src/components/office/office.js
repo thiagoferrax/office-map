@@ -122,7 +122,7 @@ export default class OfficeMap extends Component {
                 const desk = this.props.data.filter(d => d.id === +id)[0]
                 this.props.onMove({ ...desk, x: xPosition, y: yPosition })
             } else if (this.props.onSelect){
-                selectDesk(event)
+                this.selectDesk(event)
             }
         }
     }
