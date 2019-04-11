@@ -15,24 +15,24 @@ export default class App extends Component {
         id: 1,
         chairDirection: 'south', x: 0, y: 0,
         equipments: [
-          { name: 'cpu', specification: 'Dual core 2.4 GHz, 16 GB RAM, 256 GB HD' },
-          { name: 'monitor', specification: 'HP V197 18.5-inch' },
-          { name: 'keyboard', specification: 'HP Ultrathin Wireless Keyboard' },
-          { name: 'phone', specification: 'Cisco Phone IP 7960G/7940G' },
-          { name: 'chair', specification: '817L Kare Ergonomic Office Chair' },
-          { name: 'mouse', specification: 'HP USB 2 Button Optical Mouse' }
+          { type: 'cpu', specification: 'Dual core 2.4 GHz, 16 GB RAM, 256 GB HD' },
+          { type: 'monitor', specification: 'HP V197 18.5-inch' },
+          { type: 'keyboard', specification: 'HP Ultrathin Wireless Keyboard' },
+          { type: 'phone', specification: 'Cisco Phone IP 7960G/7940G' },
+          { type: 'chair', specification: '817L Kare Ergonomic Office Chair' },
+          { type: 'mouse', specification: 'HP USB 2 Button Optical Mouse' }
         ],
       },
       {
         id: 2,
         chairDirection: 'south', x: 1, y: 0,
         equipments: [
-          { name: 'cpu', specification: 'Dual core 2.4 GHz, 16 GB RAM, 256 GB HD' },
-          { name: 'monitor', specification: 'HP V197 18.5-inch' },
-          { name: 'keyboard', specification: 'HP Ultrathin Wireless Keyboard' },
-          { name: 'phone', specification: 'Cisco Phone IP 7960G/7940G' },
-          { name: 'chair', specification: '817L Kare Ergonomic Office Chair' },
-          { name: 'mouse', specification: 'HP USB 2 Button Optical Mouse' }
+          { type: 'cpu', specification: 'Dual core 2.4 GHz, 16 GB RAM, 256 GB HD' },
+          { type: 'monitor', specification: 'HP V197 18.5-inch' },
+          { type: 'keyboard', specification: 'HP Ultrathin Wireless Keyboard' },
+          { type: 'phone', specification: 'Cisco Phone IP 7960G/7940G' },
+          { type: 'chair', specification: '817L Kare Ergonomic Office Chair' },
+          { type: 'mouse', specification: 'HP USB 2 Button Optical Mouse' }
         ],
       },
       { id: 3, chairDirection: 'south', x: 2, y: 0 },
@@ -42,11 +42,11 @@ export default class App extends Component {
       {
         id: 7, chairDirection: 'north-west', x: 2, y: 1,
         equipments: [
-          { name: 'cpu', specification: 'Dual core 2.4 GHz, 8 GB RAM, 512 GB HD' },
-          { name: 'monitor', specification: 'HP V197 18.5-inch' },
-          { name: 'keyboard', specification: 'HP Ultrathin Wireless Keyboard' },
-          { name: 'phone', specification: 'Cisco Phone IP 7960G/7940G' },
-          { name: 'chair', specification: '817L Kare Ergonomic Office Chair' },
+          { type: 'cpu', specification: 'Dual core 2.4 GHz, 8 GB RAM, 512 GB HD' },
+          { type: 'monitor', specification: 'HP V197 18.5-inch' },
+          { type: 'keyboard', specification: 'HP Ultrathin Wireless Keyboard' },
+          { type: 'phone', specification: 'Cisco Phone IP 7960G/7940G' },
+          { type: 'chair', specification: '817L Kare Ergonomic Office Chair' },
         ]
       },
       { id: 8, chairDirection: 'north-east', x: 3, y: 1 },
@@ -70,7 +70,7 @@ export default class App extends Component {
           data={data} 
           onSelect={desk => this.setState({ desk })} 
           onMove={desk => this.setState({ desk })}
-          editMode={true} fields={['name', 'specification']}/>
+          editMode={true} />
       </div>
     )
   }

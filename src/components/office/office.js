@@ -55,7 +55,7 @@ export default class OfficeMap extends Component {
 
     mountFieldsMessage = (equipment, fields) => {
         return equipment && fields && fields.reduce((message, field, index) => {
-            if(message) {
+            if(message && field && equipment[field]) {
                 message += ' - '
             }
             if(field && equipment[field] && index === 0) {
@@ -72,11 +72,14 @@ export default class OfficeMap extends Component {
 
 
     getEquipmentInfo = desk => {
+
+        const fields = this.props.fields || ['type', 'specification']
+
         const equipments = desk.equipments || []
         let equipmentsInfo = equipments.reduce((message, equipment) => {
-            if (this.props.fields && this.props.fields.length && equipment[this.props.fields[0]]) {
+            if (fields && fields.length && equipment[fields[0]]) {
                 message += message ? "" : `DESK ${desk.id}\n`
-                message += this.mountFieldsMessage(equipment, this.props.fields)
+                message += this.mountFieldsMessage(equipment, fields)
             }
 
             return message
