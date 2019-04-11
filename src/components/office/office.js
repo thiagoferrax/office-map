@@ -53,12 +53,30 @@ export default class OfficeMap extends Component {
         return { minX: 0, minY: 0, width, height }
     })
 
+    mountFieldsMessage = (equipment, fields) => {
+        return equipment && fields && fields.reduce((message, field, index) => {
+            if(message) {
+                message += ' - '
+            }
+            if(field && equipment[field] && index === 0) {
+                message += equipment[field].toUpperCase()
+            } else if (field && equipment[field]){
+                message += equipment[field]
+            }
+            if(index === fields.length - 1) {
+                message += '\n'
+            }
+            return message
+        }, '')
+    }
+
+
     getEquipmentInfo = desk => {
         const equipments = desk.equipments || []
         let equipmentsInfo = equipments.reduce((message, equipment) => {
-            if (equipment.name && equipment.specification) {
+            if (this.props.fields && this.props.fields.length && equipment[this.props.fields[0]]) {
                 message += message ? "" : `DESK ${desk.id}\n`
-                message += `${equipment.name.toUpperCase()} - ${equipment.specification}\n`
+                message += this.mountFieldsMessage(equipment, this.props.fields)
             }
 
             return message
@@ -193,14 +211,17 @@ export default class OfficeMap extends Component {
     showEditMode() {
         const lines = []
 
+        let index = 0
         if (this.props.editMode) {
             const viewBox = this.state.viewBox
             for (let i = 0; i < (viewBox.height / CELL_SIZE); i++) {
-                lines.push(<line x1={0} y1={i * CELL_SIZE + 1} x2={viewBox.width} y2={i * CELL_SIZE + 1} style={{ stroke: '#1a2980', strokeWidth: 1 }} strokeDasharray="5,5" />)
+                lines.push(<line key={`line_${index}`} x1={0} y1={i * CELL_SIZE + 1} x2={viewBox.width} y2={i * CELL_SIZE + 1} style={{ stroke: '#1a2980', strokeWidth: 1 }} strokeDasharray="5,5" />)
+                index++
             }
 
             for (let i = 0; i < (viewBox.width / CELL_SIZE); i++) {
-                lines.push(<line x1={i * CELL_SIZE + 1} y1="0" x2={i * CELL_SIZE + 1} y2={viewBox.height} style={{ stroke: '#1a2980', strokeWidth: 1 }} strokeDasharray="5,5" />)
+                lines.push(<line key={`line_${index}`} x1={i * CELL_SIZE + 1} y1="0" x2={i * CELL_SIZE + 1} y2={viewBox.height} style={{ stroke: '#1a2980', strokeWidth: 1 }} strokeDasharray="5,5" />)
+                index++
             }
         }
 

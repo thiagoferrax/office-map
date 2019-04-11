@@ -20,8 +20,14 @@ import React, { Component } from 'react'
 
 import OfficeMap from 'office-map'
 
-class Example extends Component {
-  render () {
+const INITIAL_STATE = { desk: undefined }
+export default class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = INITIAL_STATE
+  }
+
+  render() {
     const data = [
       {
         id: 1,
@@ -67,7 +73,24 @@ class Example extends Component {
       { id: 11, chairDirection: 'south-west', x: 2, y: 2 },
       { id: 12, chairDirection: 'south-east', x: 3, y: 2 }
     ]
-    return (<OfficeMap data={data} onSelect={deskId => console.log('The desk selected was ' + deskId)} />)
+
+    const desk = this.state.desk
+    return (
+      <div style={{ width: 1200, margin: "10px auto" }}>
+        <h1>OfficeMap Example</h1>
+        {
+          (desk && desk.x >= 0 && desk.y  >= 0) ? 
+            (<h2>The desk {desk.id} moved to: {desk.x}, {desk.y}</h2>) : 
+            (desk && desk.id ? <h2>The desk {desk.id} was selected</h2> : '')}
+        <hr />
+        <br />
+        <OfficeMap 
+          data={data} 
+          onSelect={desk => this.setState({ desk })} 
+          onMove={desk => this.setState({ desk })}
+          editMode={true} fields={['name', 'specification']}/>
+      </div>
+    )
   }
 }
 ```
