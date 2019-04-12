@@ -12,8 +12,8 @@ export default class OfficeMap extends Component {
         super(props)
 
         const viewBox =
-            OfficeMap.calculateViewBox(this.props.data, 
-                this.props.minHorizontalSize, 
+            OfficeMap.calculateViewBox(this.props.data,
+                this.props.minHorizontalSize,
                 this.props.minVerticalSize)
 
         this.state = { ...INITIAL_STATE, viewBox }
@@ -22,8 +22,8 @@ export default class OfficeMap extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.data !== prevState.data) {
             const viewBox =
-                OfficeMap.calculateViewBox(nextProps.data, 
-                    nextProps.minHorizontalSize, 
+                OfficeMap.calculateViewBox(nextProps.data,
+                    nextProps.minHorizontalSize,
                     nextProps.minVerticalSize)
             return { viewBox }
         } else {
@@ -55,15 +55,15 @@ export default class OfficeMap extends Component {
 
     mountFieldsMessage = (equipment, fields) => {
         return equipment && fields && fields.reduce((message, field, index) => {
-            if(message && field && equipment[field]) {
+            if (message && field && equipment[field]) {
                 message += ' - '
             }
-            if(field && equipment[field] && index === 0) {
+            if (field && equipment[field] && index === 0) {
                 message += equipment[field].toUpperCase()
-            } else if (field && equipment[field]){
+            } else if (field && equipment[field]) {
                 message += equipment[field]
             }
-            if(index === fields.length - 1) {
+            if (index === fields.length - 1) {
                 message += '\n'
             }
             return message
@@ -97,15 +97,15 @@ export default class OfficeMap extends Component {
             const yRect = $('#selectableRect').attr('y')
             const visibility = $('#selectableRect').css('visibility')
 
-            if(x === +xRect && y === +yRect && visibility === 'visible') {
+            if (x === +xRect && y === +yRect && visibility === 'visible') {
                 this.unSelectDesk()
             } else {
                 $('#selectableRect').css('visibility', 'visible')
                 $('#selectableRect').attr('x', x)
                 $('#selectableRect').attr('y', y)
-              
+
                 const desk = this.props.data.filter(d => d.id === +event.target.id)[0]
-    
+
                 this.props.onSelect(desk)
             }
         }
@@ -231,139 +231,158 @@ export default class OfficeMap extends Component {
         return lines;
     }
 
-    render() {
-        const viewBox = this.state.viewBox
-        return (
-            <svg id="svg"
-                viewBox={`${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`}
-                style={{ background: 'linear-gradient(to right, #ece9e6, #ffffff)' }}>
-                <defs>
-                    <g id="chair">
-                        <rect width="70" height="70" stroke="black" fill="#1a2980" transform="translate(110 102)" strokeWidth='0.7' rx="20" ry="20" />
-                        <rect width="60" height="12" stroke="black" fill="#a5a5a5" transform="translate(114 169)" strokeWidth='0.7' rx="20" ry="20" />
-                        <rect width="10" height="40" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.7' }} transform="translate(102 112)" rx="3" ry="3" />
-                        <rect width="10" height="40" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.7' }} transform="translate(178 112)" rx="3" ry="3" />
-                    </g>
-                    <g id="drawer">
-                        <rect width="70" height="100" stroke="black" fill="#c4c4c4" transform="translate(200 38)" strokeWidth='0.7' rx="1" ry="1" />
-                        <rect width="20" height="4" style={{ fill: 'transparent', stroke: 'black', strokeWidth: '2' }} transform="translate(225 141)" rx="1" ry="1" />
-                        <rect width="70" height="4" stroke="black" fill="#a5a5a5" transform="translate(200 138)" strokeWidth='0.7' rx="1" ry="1" />
-                    </g>
-                    <g id="keyboard">
-                        <rect width="100" height="32" x="95" y="68" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: '0.7' }} rx="1" ry="1" />
-                        <rect width="60" height="4" x="115" y="90" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                        <rect width="4" height="4" x="101" y="90" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                        <rect width="4" height="4" x="108" y="90" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                        <rect width="4" height="4" x="178" y="90" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                        <rect width="4" height="4" x="185" y="90" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-
-                        <rect width="18" height="4" x="101" y="82" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                        <rect width="4" height="4" x="122" y="82" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                        <rect width="4" height="4" x="129" y="82" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                        <rect width="4" height="4" x="136" y="82" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                        <rect width="4" height="4" x="143" y="82" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                        <rect width="4" height="4" x="150" y="82" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                        <rect width="4" height="4" x="157" y="82" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                        <rect width="4" height="4" x="164" y="82" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                        <rect width="18" height="4" x="171" y="82" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-
-                        <rect width="11" height="4" x="101" y="74" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                        <rect width="4" height="4" x="115" y="74" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                        <rect width="4" height="4" x="122" y="74" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                        <rect width="4" height="4" x="129" y="74" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                        <rect width="4" height="4" x="136" y="74" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                        <rect width="4" height="4" x="143" y="74" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                        <rect width="4" height="4" x="150" y="74" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                        <rect width="4" height="4" x="157" y="74" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                        <rect width="4" height="4" x="164" y="74" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                        <rect width="4" height="4" x="171" y="74" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                        <rect width="11" height="4" x="178" y="74" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    </g>
-                    <g id="monitor">
-                        <rect width="50" height="20" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: 0.7 }} transform="translate(112 23)" rx="1" ry="1" />
-                        <rect width="136" height="5" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: 0.7 }} transform="translate(70 30)" rx="1" ry="1" />
-                    </g>
-                    <g id="phone">
-                        <rect width="45" height="45" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: '0.7' }} transform="translate(247 10)" rx="1" ry="1" />
-                        <rect width="19" height="10" style={{ fill: '#f0f0f0', stroke: 'black', strokeWidth: '0.5' }} transform="translate(267 15)" rx="1" ry="1" />
-                        <rect width="10" height="35" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(252 15)" rx="1" ry="1" />
-                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(267 31)" rx="1" ry="1" />
-                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(267 38)" rx="1" ry="1" />
-                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(267 45)" rx="1" ry="1" />
-                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(274 31)" rx="1" ry="1" />
-                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(274 38)" rx="1" ry="1" />
-                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(274 45)" rx="1" ry="1" />
-                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(281 31)" rx="1" ry="1" />
-                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(281 38)" rx="1" ry="1" />
-                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(281 45)" rx="1" ry="1" />
-                    </g>
-                    <g id="mouse">
-                        <rect width="12" height="20" x="215" y="75" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: '0.7' }} rx="4" ry="4" />
-                        <line x1="221" y1="75" x2="221" y2="82" style={{ stroke: 'black', strokeWidth: 0.5 }} />
-                    </g>
-                    <g id="desk">
-                        <rect width="260" height="104" x="1" y="1" style={{ fill: 'white', stroke: 'black', strokeWidth: 1 }} rx="1" ry="1" />
-                    </g>
-                    <g id="cpu">
-                        <rect width="40" height="78" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: 0.7 }} transform="translate(10 10)" rx="1" ry="1" />
-                    </g>
-                    <g id="myDesk_south">
-                        <use href="#chair" transform="translate(-20 -7)" />
-                        <use href="#drawer" transform="translate(-20 -28)" />
-                        <use href="#desk" transform="translate(0 0)" />
-                        <use href="#keyboard" transform="translate(-20 -4)" />
-                        <use href="#mouse" transform="translate(-28 -4)" />
-                        <use href="#monitor" transform="translate(-10 0)" />
-                        <use href="#phone" transform="translate(-40 0)" />
-                        <use href="#cpu" transform="translate(0 0)" />
-                    </g>
-                    <g id="myDesk_north">
-                        <use href="#myDesk_south" transform={`rotate(-180 ${CELL_SIZE / 2 + 1} ${CELL_SIZE / 2 + 1})`} />
-                    </g>
-                    <g id="myDesk_east">
-                        <use href="#myDesk_south" transform={`rotate(-90 ${CELL_SIZE / 2 + 1} ${CELL_SIZE / 2 + 1})`} />
-                    </g>
-                    <g id="myDesk_west">
-                        <use href="#myDesk_east" transform={`rotate(-180 ${CELL_SIZE / 2 + 1} ${CELL_SIZE / 2 + 1})`} />
-                    </g>
-                    <g id="myDesk_north-east">
-                        <use href="#myDesk_east" transform={`rotate(-45 ${CELL_SIZE / 2 - 38} ${CELL_SIZE / 2 - 93})`} />
-                    </g>
-                    <g id="myDesk_south-west">
-                        <use href="#myDesk_north-east" transform={`rotate(-180 ${CELL_SIZE / 2 + 1} ${CELL_SIZE / 2 + 1})`} />
-                    </g>
-                    <g id="myDesk_south-east">
-                        <use href="#myDesk_east" transform={`rotate(45 ${CELL_SIZE / 2 - 38} ${CELL_SIZE / 2 + 95})`} />
-                    </g>
-                    <g id="myDesk_north-west">
-                        <use href="#myDesk_south-east" transform={`rotate(-180 ${CELL_SIZE / 2 + 1} ${CELL_SIZE / 2 + 1})`} />
-                    </g>
-                </defs>
-
-                {this.showEditMode()}
-
-                <rect id="selectableRect" x={0} y={0} width="260" height="260" style={{ fill: 'rgb(0,123,255, 0.2)', strokeWidth: 2, stroke: 'rgb(0,123,255)', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
-
-                {
-                    this.props.data && this.props.data.map(desk =>
-                        (<use
-                            id={desk.id}
-                            style={this.props.onMove ? { cursor: 'grab' } : {}}
-                            key={`key_${desk.id}`}
-                            href={`#myDesk_${desk.chairDirection}`}
-                            x={desk.x * CELL_SIZE}
-                            y={desk.y * CELL_SIZE}
-                            className="clickable draggable"
-                            onMouseDown={this.props.onMove ? event => this.startDrag(event) : () => { }}
-                            onMouseMove={this.props.onMove ? event => this.drag(event) : () => { }}
-                            onMouseUp={this.props.onMove ? event => this.endDrag(event) : () => { }}
-                            onClick={this.props.onSelect ? event => this.selectDesk(event) : () => { }}>
-                            <title>{this.getEquipmentInfo(desk)}</title>
-                        </use>))
-                }
-
-                <rect id="svgLastElement" x={0} y={0} width="0" height="0" />
-
-            </svg>)
+    showDesks() {
+        return this.props.data && this.props.data.map(desk =>
+            (<use
+                id={desk.id}
+                style={this.props.onMove ? { cursor: 'grab' } : {}}
+                key={`key_${desk.id}`}
+                href={`#${this.getDeskId(desk)}`}
+                x={desk.x * CELL_SIZE}
+                y={desk.y * CELL_SIZE}
+                className="clickable draggable"
+                onMouseDown={this.props.onMove ? event => this.startDrag(event) : () => { }}
+                onMouseMove={this.props.onMove ? event => this.drag(event) : () => { }}
+                onMouseUp={this.props.onMove ? event => this.endDrag(event) : () => { }}
+                onClick={this.props.onSelect ? event => this.selectDesk(event) : () => { }}>
+                <title>{this.getEquipmentInfo(desk)}</title>
+            </use>))
     }
+
+    getDeskComponentsTypes(desk) {
+        const deskComponents = desk.equipments ? desk.equipments.map(e => e.type) : []  
+        const definedComponents = ['chair', 'drawer', 'desk', 'keyboard', 'mouse', 'monitor', 'phone', 'cpu']
+        return definedComponents.filter(component => ['desk'].concat(deskComponents).includes(component))
+    }
+
+    getDeskComponents(desk) {
+        const transformMap = {
+            'south': '',
+            'north': `rotate(-180 ${CELL_SIZE / 2 + 1} ${CELL_SIZE / 2 + 1})`,
+            'east': `rotate(-90 ${CELL_SIZE / 2 + 1} ${CELL_SIZE / 2 + 1})`,
+            'west': `rotate(90 ${CELL_SIZE / 2 + 1} ${CELL_SIZE / 2 + 1})`,
+            'north-east': `rotate(-135 ${CELL_SIZE / 2 + 17} ${CELL_SIZE / 2 - 38})`,
+            'south-west': `rotate(45 ${CELL_SIZE / 2 - 93} ${CELL_SIZE / 2 - 38})`,
+            'south-east': `rotate(-45 ${CELL_SIZE / 2 + 95} ${CELL_SIZE / 2 - 38})`,
+            'north-west': `rotate(135 ${CELL_SIZE / 2 - 15} ${CELL_SIZE / 2 - 38})`
+        }
+
+        const deskComponents = this.getDeskComponentsTypes(desk)
+        return deskComponents.map(component =>
+            (<use
+                key={`component_${desk.chairDirection}_${component}`}
+                href={`#${component}`}
+                transform={transformMap[desk.chairDirection]} />))
+    }
+
+    buildDesksDefinitions() {
+        return this.props.data && this.props.data.map(desk => {
+            console.log(this.getDeskId(desk))
+
+            return (< g key = {`desks_definition_${desk.chairDirection}`} id = { this.getDeskId(desk) } >
+                { this.getDeskComponents(desk) }
+            </g>
+        )})
+    }
+
+getDeskId(desk) {
+    const chairDirection = desk.chairDirection
+    const deskComponents = this.getDeskComponentsTypes(desk)
+    return deskComponents.reduce((deskId, component) => {
+        deskId += '_' + component
+        return deskId
+    }, chairDirection)
+}
+
+render() {
+    console.log('rendering...')
+    const viewBox = this.state.viewBox
+    return (
+        <svg id="svg"
+            viewBox={`${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`}
+            style={{ background: 'linear-gradient(to right, #ece9e6, #ffffff)' }}>
+            <defs>
+                <g id="chair">
+                    <rect width="70" height="70" stroke="black" fill="#1a2980" transform="translate(90 95)" strokeWidth='0.7' rx="20" ry="20" />
+                    <rect width="60" height="12" stroke="black" fill="#a5a5a5" transform="translate(94 162)" strokeWidth='0.7' rx="20" ry="20" />
+                    <rect width="10" height="40" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.7' }} transform="translate(82 105)" rx="3" ry="3" />
+                    <rect width="10" height="40" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.7' }} transform="translate(158 105)" rx="3" ry="3" />
+                </g>
+                <g id="drawer">
+                    <rect width="70" height="100" stroke="black" fill="#c4c4c4" transform="translate(180 10)" strokeWidth='0.7' rx="1" ry="1" />
+                    <rect width="20" height="4" style={{ fill: 'transparent', stroke: 'black', strokeWidth: '2' }} transform="translate(205 113)" rx="1" ry="1" />
+                    <rect width="70" height="4" stroke="black" fill="#a5a5a5" transform="translate(180 110)" strokeWidth='0.7' rx="1" ry="1" />
+                </g>
+                <g id="keyboard">
+                    <rect width="100" height="32" x="75" y="62" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: '0.7' }} rx="1" ry="1" />
+                    <rect width="60" height="4" x="95" y="84" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    <rect width="4" height="4" x="81" y="84" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    <rect width="4" height="4" x="88" y="84" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    <rect width="4" height="4" x="158" y="84" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    <rect width="4" height="4" x="165" y="84" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+
+                    <rect width="18" height="4" x="81" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    <rect width="4" height="4" x="102" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    <rect width="4" height="4" x="109" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    <rect width="4" height="4" x="116" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    <rect width="4" height="4" x="123" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    <rect width="4" height="4" x="130" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    <rect width="4" height="4" x="137" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    <rect width="4" height="4" x="144" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    <rect width="18" height="4" x="151" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+
+                    <rect width="11" height="4" x="81" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    <rect width="4" height="4" x="95" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    <rect width="4" height="4" x="102" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    <rect width="4" height="4" x="109" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    <rect width="4" height="4" x="116" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    <rect width="4" height="4" x="123" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    <rect width="4" height="4" x="130" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    <rect width="4" height="4" x="137" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    <rect width="4" height="4" x="144" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    <rect width="4" height="4" x="151" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    <rect width="11" height="4" x="158" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                </g>
+                <g id="monitor">
+                    <rect width="50" height="20" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: 0.7 }} transform="translate(102 23)" rx="1" ry="1" />
+                    <rect width="136" height="5" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: 0.7 }} transform="translate(60 30)" rx="1" ry="1" />
+                </g>
+                <g id="phone">
+                    <rect width="45" height="45" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: '0.7' }} transform="translate(207 10)" rx="1" ry="1" />
+                    <rect width="19" height="10" style={{ fill: '#f0f0f0', stroke: 'black', strokeWidth: '0.5' }} transform="translate(227 15)" rx="1" ry="1" />
+                    <rect width="10" height="35" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(212 15)" rx="1" ry="1" />
+                    <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(227 31)" rx="1" ry="1" />
+                    <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(227 38)" rx="1" ry="1" />
+                    <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(227 45)" rx="1" ry="1" />
+                    <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(234 31)" rx="1" ry="1" />
+                    <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(234 38)" rx="1" ry="1" />
+                    <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(234 45)" rx="1" ry="1" />
+                    <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(241 31)" rx="1" ry="1" />
+                    <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(241 38)" rx="1" ry="1" />
+                    <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(241 45)" rx="1" ry="1" />
+                </g>
+                <g id="mouse">
+                    <rect width="12" height="20" x="187" y="71" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: '0.7' }} rx="4" ry="4" />
+                    <line x1="193" y1="71" x2="193" y2="78" style={{ stroke: 'black', strokeWidth: 0.5 }} />
+                </g>
+                <g id="desk">
+                    <rect width="260" height="104" x="1" y="1" style={{ fill: 'white', stroke: 'black', strokeWidth: 1 }} rx="1" ry="1" />
+                </g>
+                <g id="cpu">
+                    <rect width="40" height="78" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: 0.7 }} transform="translate(10 10)" rx="1" ry="1" />
+                </g>
+
+                {this.buildDesksDefinitions()}
+            </defs>
+
+            {this.showEditMode()}
+
+            <rect id="selectableRect" x={0} y={0} width="260" height="260" style={{ fill: 'rgb(0,123,255, 0.2)', strokeWidth: 2, stroke: 'rgb(0,123,255)', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
+
+            {this.showDesks()}
+
+            <rect id="svgLastElement" x={0} y={0} width="0" height="0" />
+
+        </svg>)
+}
 }
