@@ -250,7 +250,7 @@ export default class OfficeMap extends Component {
     }
 
     getDeskComponentsTypes(desk) {
-        const deskComponents = desk.equipments ? desk.equipments.map(e => e.type ? e.type.toLowerCase() : '') : []  
+        const deskComponents = desk.equipments ? desk.equipments.map(e => e.type ? e.type.toLowerCase() : '') : []
         const definedComponents = ['chair', 'drawer', 'desk', 'keyboard', 'mouse', 'monitor', 'phone', 'cpu']
         return definedComponents.filter(component => ['desk'].concat(deskComponents).includes(component))
     }
@@ -276,113 +276,117 @@ export default class OfficeMap extends Component {
     }
 
     buildDesksDefinitions() {
-        return this.props.data && this.props.data.map(desk => {
-            console.log(this.getDeskId(desk))
+        const keys = []
+        return this.props.data && this.props.data.reduce((desksDefinitions, desk) => {
+            const deskId = this.getDeskId(desk)
+            const key = `desks_definition_${deskId}`
+            if (!keys.includes(key)) {
+                keys.push(key)
 
-            return (< g key = {`desks_definition_${desk.chairDirection}`} id = { this.getDeskId(desk) } >
-                { this.getDeskComponents(desk) }
-            </g>
-        )})
+                const deskComponents = this.getDeskComponents(desk)
+                desksDefinitions.push(<g key={key} id={deskId} >{deskComponents}</g>)    
+            }
+            return desksDefinitions
+        }, [])
     }
 
-getDeskId(desk) {
-    const chairDirection = desk.chairDirection
-    const deskComponents = this.getDeskComponentsTypes(desk)
-    return deskComponents.reduce((deskId, component) => {
-        deskId += '_' + component
-        return deskId
-    }, chairDirection)
-}
+    getDeskId(desk) {
+        const chairDirection = desk.chairDirection
+        const deskComponents = this.getDeskComponentsTypes(desk)
+        return deskComponents.reduce((deskId, component) => {
+            deskId += '_' + component
+            return deskId
+        }, chairDirection)
+    }
 
-render() {
-    console.log('rendering...')
-    const viewBox = this.state.viewBox
-    return (
-        <svg id="svg"
-            viewBox={`${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`}
-            style={{ background: 'linear-gradient(to right, #ece9e6, #ffffff)' }}>
-            <defs>
-                <g id="chair">
-                    <rect width="70" height="70" stroke="black" fill="#1a2980" transform="translate(90 95)" strokeWidth='0.7' rx="20" ry="20" />
-                    <rect width="60" height="12" stroke="black" fill="#a5a5a5" transform="translate(94 162)" strokeWidth='0.7' rx="20" ry="20" />
-                    <rect width="10" height="40" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.7' }} transform="translate(82 105)" rx="3" ry="3" />
-                    <rect width="10" height="40" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.7' }} transform="translate(158 105)" rx="3" ry="3" />
-                </g>
-                <g id="drawer">
-                    <rect width="70" height="100" stroke="black" fill="#c4c4c4" transform="translate(180 10)" strokeWidth='0.7' rx="1" ry="1" />
-                    <rect width="20" height="4" style={{ fill: 'transparent', stroke: 'black', strokeWidth: '2' }} transform="translate(205 113)" rx="1" ry="1" />
-                    <rect width="70" height="4" stroke="black" fill="#a5a5a5" transform="translate(180 110)" strokeWidth='0.7' rx="1" ry="1" />
-                </g>
-                <g id="keyboard">
-                    <rect width="100" height="32" x="75" y="62" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: '0.7' }} rx="1" ry="1" />
-                    <rect width="60" height="4" x="95" y="84" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    <rect width="4" height="4" x="81" y="84" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    <rect width="4" height="4" x="88" y="84" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    <rect width="4" height="4" x="158" y="84" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    <rect width="4" height="4" x="165" y="84" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+    render() {
+        const viewBox = this.state.viewBox
+        return (
+            <svg id="svg"
+                viewBox={`${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`}
+                style={{ background: 'linear-gradient(to right, #ece9e6, #ffffff)' }}>
+                <defs>
+                    <g id="chair">
+                        <rect width="70" height="70" stroke="black" fill="#1a2980" transform="translate(90 95)" strokeWidth='0.7' rx="20" ry="20" />
+                        <rect width="60" height="12" stroke="black" fill="#a5a5a5" transform="translate(94 162)" strokeWidth='0.7' rx="20" ry="20" />
+                        <rect width="10" height="40" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.7' }} transform="translate(82 105)" rx="3" ry="3" />
+                        <rect width="10" height="40" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.7' }} transform="translate(158 105)" rx="3" ry="3" />
+                    </g>
+                    <g id="drawer">
+                        <rect width="70" height="100" stroke="black" fill="#c4c4c4" transform="translate(180 10)" strokeWidth='0.7' rx="1" ry="1" />
+                        <rect width="20" height="4" style={{ fill: 'transparent', stroke: 'black', strokeWidth: '2' }} transform="translate(205 113)" rx="1" ry="1" />
+                        <rect width="70" height="4" stroke="black" fill="#a5a5a5" transform="translate(180 110)" strokeWidth='0.7' rx="1" ry="1" />
+                    </g>
+                    <g id="keyboard">
+                        <rect width="100" height="32" x="75" y="62" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: '0.7' }} rx="1" ry="1" />
+                        <rect width="60" height="4" x="95" y="84" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="81" y="84" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="88" y="84" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="158" y="84" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="165" y="84" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
 
-                    <rect width="18" height="4" x="81" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    <rect width="4" height="4" x="102" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    <rect width="4" height="4" x="109" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    <rect width="4" height="4" x="116" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    <rect width="4" height="4" x="123" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    <rect width="4" height="4" x="130" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    <rect width="4" height="4" x="137" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    <rect width="4" height="4" x="144" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    <rect width="18" height="4" x="151" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="18" height="4" x="81" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="102" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="109" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="116" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="123" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="130" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="137" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="144" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="18" height="4" x="151" y="76" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
 
-                    <rect width="11" height="4" x="81" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    <rect width="4" height="4" x="95" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    <rect width="4" height="4" x="102" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    <rect width="4" height="4" x="109" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    <rect width="4" height="4" x="116" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    <rect width="4" height="4" x="123" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    <rect width="4" height="4" x="130" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    <rect width="4" height="4" x="137" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    <rect width="4" height="4" x="144" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    <rect width="4" height="4" x="151" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                    <rect width="11" height="4" x="158" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
-                </g>
-                <g id="monitor">
-                    <rect width="50" height="20" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: 0.7 }} transform="translate(102 23)" rx="1" ry="1" />
-                    <rect width="136" height="5" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: 0.7 }} transform="translate(60 30)" rx="1" ry="1" />
-                </g>
-                <g id="phone">
-                    <rect width="45" height="45" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: '0.7' }} transform="translate(207 10)" rx="1" ry="1" />
-                    <rect width="19" height="10" style={{ fill: '#f0f0f0', stroke: 'black', strokeWidth: '0.5' }} transform="translate(227 15)" rx="1" ry="1" />
-                    <rect width="10" height="35" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(212 15)" rx="1" ry="1" />
-                    <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(227 31)" rx="1" ry="1" />
-                    <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(227 38)" rx="1" ry="1" />
-                    <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(227 45)" rx="1" ry="1" />
-                    <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(234 31)" rx="1" ry="1" />
-                    <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(234 38)" rx="1" ry="1" />
-                    <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(234 45)" rx="1" ry="1" />
-                    <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(241 31)" rx="1" ry="1" />
-                    <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(241 38)" rx="1" ry="1" />
-                    <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(241 45)" rx="1" ry="1" />
-                </g>
-                <g id="mouse">
-                    <rect width="12" height="20" x="187" y="71" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: '0.7' }} rx="4" ry="4" />
-                    <line x1="193" y1="71" x2="193" y2="78" style={{ stroke: 'black', strokeWidth: 0.5 }} />
-                </g>
-                <g id="desk">
-                    <rect width="260" height="104" x="1" y="1" style={{ fill: 'white', stroke: 'black', strokeWidth: 1 }} rx="1" ry="1" />
-                </g>
-                <g id="cpu">
-                    <rect width="40" height="78" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: 0.7 }} transform="translate(10 10)" rx="1" ry="1" />
-                </g>
+                        <rect width="11" height="4" x="81" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="95" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="102" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="109" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="116" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="123" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="130" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="137" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="144" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="151" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="11" height="4" x="158" y="68" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                    </g>
+                    <g id="monitor">
+                        <rect width="50" height="20" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: 0.7 }} transform="translate(102 23)" rx="1" ry="1" />
+                        <rect width="136" height="5" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: 0.7 }} transform="translate(60 30)" rx="1" ry="1" />
+                    </g>
+                    <g id="phone">
+                        <rect width="45" height="45" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: '0.7' }} transform="translate(207 10)" rx="1" ry="1" />
+                        <rect width="19" height="10" style={{ fill: '#f0f0f0', stroke: 'black', strokeWidth: '0.5' }} transform="translate(227 15)" rx="1" ry="1" />
+                        <rect width="10" height="35" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(212 15)" rx="1" ry="1" />
+                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(227 31)" rx="1" ry="1" />
+                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(227 38)" rx="1" ry="1" />
+                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(227 45)" rx="1" ry="1" />
+                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(234 31)" rx="1" ry="1" />
+                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(234 38)" rx="1" ry="1" />
+                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(234 45)" rx="1" ry="1" />
+                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(241 31)" rx="1" ry="1" />
+                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(241 38)" rx="1" ry="1" />
+                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(241 45)" rx="1" ry="1" />
+                    </g>
+                    <g id="mouse">
+                        <rect width="12" height="20" x="187" y="71" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: '0.7' }} rx="4" ry="4" />
+                        <line x1="193" y1="71" x2="193" y2="78" style={{ stroke: 'black', strokeWidth: 0.5 }} />
+                    </g>
+                    <g id="desk">
+                        <rect width="260" height="104" x="1" y="1" style={{ fill: 'white', stroke: 'black', strokeWidth: 1 }} rx="1" ry="1" />
+                    </g>
+                    <g id="cpu">
+                        <rect width="40" height="78" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: 0.7 }} transform="translate(10 10)" rx="1" ry="1" />
+                    </g>
 
-                {this.buildDesksDefinitions()}
-            </defs>
+                    {this.buildDesksDefinitions()}
+                </defs>
 
-            {this.showEditMode()}
+                {this.showEditMode()}
 
-            <rect id="selectableRect" x={0} y={0} width="260" height="260" style={{ fill: 'rgb(0,123,255, 0.2)', strokeWidth: 2, stroke: 'rgb(0,123,255)', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
+                <rect id="selectableRect" x={0} y={0} width="260" height="260" style={{ fill: 'rgb(0,123,255, 0.2)', strokeWidth: 2, stroke: 'rgb(0,123,255)', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
 
-            {this.showDesks()}
+                {this.showDesks()}
 
-            <rect id="svgLastElement" x={0} y={0} width="0" height="0" />
+                <rect id="svgLastElement" x={0} y={0} width="0" height="0" />
 
-        </svg>)
-}
+            </svg>)
+    }
 }
