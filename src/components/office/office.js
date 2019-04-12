@@ -250,7 +250,7 @@ export default class OfficeMap extends Component {
     }
 
     getDeskComponentsTypes(desk) {
-        const deskComponents = desk.equipments ? desk.equipments.map(e => e.type) : []  
+        const deskComponents = desk.equipments ? desk.equipments.map(e => e.type.toLowerCase()) : []  
         const definedComponents = ['chair', 'drawer', 'desk', 'keyboard', 'mouse', 'monitor', 'phone', 'cpu']
         return definedComponents.filter(component => ['desk'].concat(deskComponents).includes(component))
     }
