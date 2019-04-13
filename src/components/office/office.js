@@ -251,7 +251,7 @@ export default class OfficeMap extends Component {
 
     getDeskComponentsTypes(desk) {
         const deskComponents = desk.equipments ? desk.equipments.map(e => e.type ? e.type.toLowerCase() : '') : []
-        const definedComponents = ['chair', 'drawer', 'desk', 'keyboard', 'mouse', 'monitor', 'phone', 'cpu']
+        const definedComponents = ['chair', 'drawer', 'desk', 'keyboard', 'mouse', 'monitor', 'phone', 'cpu', 'desktop', 'laptop']
         return definedComponents.filter(component => ['desk'].concat(deskComponents).includes(component))
     }
 
@@ -284,7 +284,7 @@ export default class OfficeMap extends Component {
                 keys.push(key)
 
                 const deskComponents = this.getDeskComponents(desk)
-                desksDefinitions.push(<g key={key} id={deskId} >{deskComponents}</g>)    
+                desksDefinitions.push(<g key={key} id={deskId} >{deskComponents}</g>)
             }
             return desksDefinitions
         }, [])
@@ -373,7 +373,52 @@ export default class OfficeMap extends Component {
                         <rect width="260" height="104" x="1" y="1" style={{ fill: 'white', stroke: 'black', strokeWidth: 1 }} rx="1" ry="1" />
                     </g>
                     <g id="cpu">
-                        <rect width="40" height="78" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: 0.7 }} transform="translate(10 10)" rx="1" ry="1" />
+                        <rect width="40" height="84" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: 0.7 }} transform="translate(10 10)" rx="1" ry="1" />
+                    </g>
+                    <g id="desktop">
+                        <use href="#cpu" />
+                        <use href="#keyboard" />
+                        <use href="#mouse" />
+                    </g>
+                    <g id="laptop">
+                      
+                        <rect width="110" height="3" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: 0.7 }} transform="translate(70 18)" rx="2" ry="2" />
+                        <polygon points="75,35 175,35 180,20 70,20" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: 0.7 }} rx="1" ry="1" />
+                        <polygon points="77,33 173,33 177,22 73,22" style={{ fill: '#cacaca', stroke: 'black', strokeWidth: 0.5 }} rx="1" ry="1" />
+                        
+                        <rect width="100" height="58" x="75" y="36" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: '0.7' }} rx="1" ry="1" />
+                        <rect width="25" height="13" x="113" y="73" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: '0.7' }} rx="1" ry="1" />
+                        <rect width="60" height="4" x="95" y="62" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="81" y="62" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="88" y="62" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="158" y="62" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="165" y="62" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+
+                        <rect width="18" height="4" x="81" y="54" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="102" y="54" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="109" y="54" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="116" y="54" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="123" y="54" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="130" y="54" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="137" y="54" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="144" y="54" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="18" height="4" x="151" y="54" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+
+                        <rect width="11" height="4" x="81" y="46" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="95" y="46" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="102" y="46" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="109" y="46" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="116" y="46" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="123" y="46" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="130" y="46" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="137" y="46" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="144" y="46" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="4" height="4" x="151" y="46" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+                        <rect width="11" height="4" x="158" y="46" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
+
+                        <line x1="126" y1="80" x2="126" y2="85" style={{ stroke: 'black', strokeWidth: 0.5 }} />
+                   
+                        <use href="#mouse" />
                     </g>
 
                     {this.buildDesksDefinitions()}
