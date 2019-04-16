@@ -189,8 +189,8 @@ export default class OfficeMap extends Component {
 
         pt.x = event.clientX;
         pt.y = event.clientY;
-
         let svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+
 
         return {
             x: svgP.x,
@@ -218,12 +218,12 @@ export default class OfficeMap extends Component {
         if (this.props.editMode) {
             const viewBox = this.state.viewBox
             for (let i = 0; i < (viewBox.height / CELL_SIZE); i++) {
-                lines.push(<line key={`line_${index}`} x1={0} y1={i * CELL_SIZE + 1} x2={viewBox.width} y2={i * CELL_SIZE + 1} style={{ stroke: '#1a2980', strokeWidth: 1 }} strokeDasharray="5,5" />)
+                lines.push(<line key={`line_${index}`} x1={0} y1={i * CELL_SIZE + 1} x2={viewBox.width} y2={i * CELL_SIZE + 1} style={{ stroke: 'black', strokeWidth: 0.2 }} />)
                 index++
             }
 
             for (let i = 0; i < (viewBox.width / CELL_SIZE); i++) {
-                lines.push(<line key={`line_${index}`} x1={i * CELL_SIZE + 1} y1="0" x2={i * CELL_SIZE + 1} y2={viewBox.height} style={{ stroke: '#1a2980', strokeWidth: 1 }} strokeDasharray="5,5" />)
+                lines.push(<line key={`line_${index}`} x1={i * CELL_SIZE + 1} y1="0" x2={i * CELL_SIZE + 1} y2={viewBox.height} style={{ stroke: 'black', strokeWidth: 0.2 }} />)
                 index++
             }
         }
@@ -251,7 +251,7 @@ export default class OfficeMap extends Component {
 
     getDeskComponentsTypes(desk) {
         const deskComponents = desk.equipments ? desk.equipments.map(e => e.type ? e.type.toLowerCase() : '') : []
-        const definedComponents = ['chair',  'drawer', 'desk', 'keyboard', 'mouse', 'monitor', 'phone', 'cpu', 'desktop', 'laptop']
+        const definedComponents = ['chair', 'drawer', 'desk', 'keyboard', 'mouse', 'monitor', 'phone', 'cpu', 'desktop', 'laptop']
         return definedComponents.filter(component => ['desk'].concat(deskComponents).includes(component))
     }
 
@@ -304,7 +304,7 @@ export default class OfficeMap extends Component {
         return (
             <svg id="svg"
                 viewBox={`${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`}
-                style={{ background: 'linear-gradient(to right, #ece9e6, #ffffff)' }}>
+                style={{ background: 'linear-gradient(to bottom right, #ece9e6, #ffffff)' }}>
                 <defs>
                     <g id="chair">
                         <rect width="70" height="70" stroke="black" fill="#1a2980" transform="translate(90 95)" strokeWidth='0.7' rx="23" ry="23" />
@@ -314,7 +314,7 @@ export default class OfficeMap extends Component {
                     </g>
                     <g id="drawer">
                         <rect width="64" height="100" stroke="black" fill="#c4c4c4" transform="translate(183 9)" strokeWidth='0.7' rx="1" ry="1" />
-                        <rect width="20" height="4" style={{ fill: 'transparent', stroke: 'black', strokeWidth: '2' }} transform="translate(205 112)" rx="1" ry="1" />
+                        <rect width="20" height="5" style={{ fill: 'transparent', stroke: 'black', strokeWidth: '2' }} transform="translate(205 112)" rx="1" ry="1" />
                         <rect width="64" height="4" stroke="black" fill="#a5a5a5" transform="translate(183 109)" strokeWidth='0.7' rx="1" ry="1" />
                     </g>
                     <g id="keyboard">
@@ -348,8 +348,8 @@ export default class OfficeMap extends Component {
                         <rect width="11" height="4" x="158" y="65" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
                     </g>
                     <g id="monitor">
-                        <rect width="40" height="20" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: 0.7 }} transform="translate(107 15)" rx="1" ry="1" />
-                        <rect width="126" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: 0.7 }} transform="translate(65 23)" rx="1" ry="1" />
+                        <rect width="30" height="20" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: 0.7 }} transform="translate(111 15)" rx="1" ry="1" />
+                        <rect width="110" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: 0.7 }} transform="translate(70 23)" rx="1" ry="1" />
                     </g>
                     <g id="phone">
                         <rect width="45" height="45" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: '0.7' }} transform="translate(202 15)" rx="1" ry="1" />
@@ -380,11 +380,11 @@ export default class OfficeMap extends Component {
                         <use href="#keyboard" />
                         <use href="#mouse" />
                     </g>
-                    <g id="laptop">                      
+                    <g id="laptop">
                         <rect width="110" height="3" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: 0.7 }} transform="translate(70 15)" rx="2" ry="2" />
                         <polygon points="75,32 175,32 180,17 70,17" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: 0.7 }} rx="1" ry="1" />
                         <polygon points="77,30 173,30 177,19 73,19" style={{ fill: '#cacaca', stroke: 'black', strokeWidth: 0.5 }} rx="1" ry="1" />
-                        
+
                         <rect width="100" height="58" x="75" y="33" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: '0.7' }} rx="1" ry="1" />
                         <rect width="25" height="13" x="113" y="73" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: '0.7' }} rx="1" ry="1" />
                         <rect width="60" height="4" x="95" y="62" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
@@ -416,10 +416,7 @@ export default class OfficeMap extends Component {
                         <rect width="11" height="4" x="158" y="46" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} rx="1" ry="1" />
 
                         <line x1="126" y1="80" x2="126" y2="85" style={{ stroke: 'black', strokeWidth: 0.5 }} />
-                   
-                        <use href="#mouse" />
                     </g>
-
                     {this.buildDesksDefinitions()}
                 </defs>
 
