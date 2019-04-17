@@ -311,7 +311,7 @@ export default class OfficeMap extends Component {
                         <rect width="60" height="12" stroke="black" fill="#a5a5a5" transform="translate(94 162)" strokeWidth='0.7' rx="15" ry="15" />
                         <rect width="10" height="40" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.7' }} transform="translate(82 105)" rx="3" ry="3" />
                         <rect width="10" height="40" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.7' }} transform="translate(158 105)" rx="3" ry="3" />
-                        <line x1="95" y1="168" x2="153" y2="168" style={{ stroke: '#666666', strokeWidth: 1 }} />
+                        <line x1="95" y1="168" x2="153" y2="168" style={{ stroke: '#5b5b5b', strokeWidth: 0.7 }} rx="3" ry="3" />
                     </g>
                     <g id="drawer">
                         <rect width="64" height="100" stroke="black" fill="#c4c4c4" transform="translate(183 15)" strokeWidth='0.7' rx="1" ry="1" />
@@ -351,18 +351,18 @@ export default class OfficeMap extends Component {
                         <rect width="103" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: 0.7 }} transform="translate(73 20)" rx="1" ry="1" />
                     </g>
                     <g id="phone">
-                        <rect width="44" height="45" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: '0.7' }} transform="translate(202 15)" rx="1" ry="1" />
-                        <rect width="19" height="10" style={{ fill: '#f0f0f0', stroke: 'black', strokeWidth: '0.5' }} transform="translate(222 20)" rx="1" ry="1" />
-                        <rect width="10" height="35" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(207 20)" rx="1" ry="1" />
-                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(222 36)" rx="1" ry="1" />
-                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(222 43)" rx="1" ry="1" />
-                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(222 50)" rx="1" ry="1" />
-                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(229 36)" rx="1" ry="1" />
-                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(229 43)" rx="1" ry="1" />
-                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(229 50)" rx="1" ry="1" />
-                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(236 36)" rx="1" ry="1" />
-                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(236 43)" rx="1" ry="1" />
-                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(236 50)" rx="1" ry="1" />
+                        <rect width="44" height="45" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: '0.7' }} transform="translate(203 15)" rx="1" ry="1" />
+                        <rect width="19" height="10" style={{ fill: '#f0f0f0', stroke: 'black', strokeWidth: '0.5' }} transform="translate(223 20)" rx="1" ry="1" />
+                        <rect width="10" height="35" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(208 20)" rx="1" ry="1" />
+                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(223 36)" rx="1" ry="1" />
+                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(223 43)" rx="1" ry="1" />
+                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(223 50)" rx="1" ry="1" />
+                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(230 36)" rx="1" ry="1" />
+                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(230 43)" rx="1" ry="1" />
+                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(230 50)" rx="1" ry="1" />
+                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(237 36)" rx="1" ry="1" />
+                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(237 43)" rx="1" ry="1" />
+                        <rect width="4" height="4" style={{ fill: '#a5a5a5', stroke: 'black', strokeWidth: '0.5' }} transform="translate(237 50)" rx="1" ry="1" />
                     </g>
                     <g id="mouse">
                         <rect width="12" height="20" x="184" y="71" style={{ fill: '#e1e1e1', stroke: 'black', strokeWidth: '0.7' }} rx="4" ry="4" />
@@ -419,7 +419,7 @@ export default class OfficeMap extends Component {
 
                 {this.showEditMode()}
 
-                <rect id="selectableRect" x={0} y={0} width="260" height="260" style={{ fill: 'rgb(0,123,255, 0.2)', strokeWidth: 2, stroke: 'rgb(0,123,255)', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
+                <rect id="selectableRect" x={0} y={0} width="260" height="260" style={{ fill: '#d0d6f5', strokeWidth: 1, stroke: '#1a2980', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
 
                 {this.showDesks()}
 
