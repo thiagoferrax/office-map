@@ -1,10 +1,19 @@
 import React, { Component } from 'react'
 import $ from 'jquery'
 import memoize from 'memoize-one'
+import './office.css'
 
 const CELL_SIZE = 260
+const CELL_QTY = 25
 
-const INITIAL_STATE = { selectedElement: undefined, offset: { x: 0, y: 0 }, viewBox: undefined, svg: undefined, xPosition: undefined, yPosition: undefined }
+const INITIAL_STATE = { 
+        selectedElement: undefined, 
+        offset: { x: 0, y: 0 }, 
+        viewBox: undefined, 
+        svg: undefined, 
+        xPosition: undefined, 
+        yPosition: undefined, 
+        transformMatrix: [1, 0, 0, 1, 0, 0] }
 
 export default class OfficeMap extends Component {
 
@@ -31,6 +40,46 @@ export default class OfficeMap extends Component {
         }
     }
 
+    pan(dx, dy) {
+        const transformMatrix = this.state.transformMatrix
+
+        transformMatrix[4] += dx;
+        transformMatrix[5] += dy;
+
+        this.setMatrix(transformMatrix)
+    }
+
+    zoom(scale) {
+        const transformMatrix = this.state.transformMatrix
+        const viewBox = this.state.viewBox
+
+        const centerX = parseFloat(viewBox.width) / 2;
+        const centerY = parseFloat(viewBox.height) / 2;
+
+        for (let i = 0; i < 6; i++) {
+            transformMatrix[i] *= scale;
+        }
+        transformMatrix[4] += (1 - scale) * centerX;
+        transformMatrix[5] += (1 - scale) * centerY;
+
+        this.setMatrix(transformMatrix)
+    }
+
+    setMatrix(transformMatrix) {
+        let svg = this.state.svg
+        if (!svg) {
+            svg = document.getElementById("svg")
+            this.setState({ svg })
+        }
+        if (svg) {
+            const newMatrix = "matrix(" + transformMatrix.join(' ') + ")";
+            var matrixGroup = svg.getElementById("matrix-group")
+            matrixGroup.setAttributeNS(null, "transform", newMatrix);
+
+            this.setState({ transformMatrix })
+        }
+    }
+
     unSelectDesk() {
         $('#selectableRect').css('visibility', 'hidden')
         $('#selectableRect').attr('x', 0)
@@ -44,8 +93,8 @@ export default class OfficeMap extends Component {
             return maximus
         }, { x: 0, y: 0 })
 
-        maximus.x = Math.max(minHorizontalSize || 1, maximus.x)
-        maximus.y = Math.max(minVerticalSize || 1, maximus.y)
+        maximus.x = minHorizontalSize ? minHorizontalSize : Math.max(minHorizontalSize || 1, maximus.x)
+        maximus.y = minVerticalSize ? minVerticalSize : Math.max(minVerticalSize || 1, maximus.y)
 
         const width = (maximus.x + 1) * CELL_SIZE + 2
         const height = (maximus.y + 1) * CELL_SIZE + 2
@@ -70,9 +119,7 @@ export default class OfficeMap extends Component {
         }, '')
     }
 
-
     getEquipmentInfo = desk => {
-
         const fields = this.props.fields || ['type', 'specification']
 
         const equipments = desk.equipments || []
@@ -185,16 +232,13 @@ export default class OfficeMap extends Component {
             this.setState({ svg })
         }
 
-        let pt = svg.createSVGPoint()
+        let transformMatrix = this.state.transformMatrix
 
-        pt.x = event.clientX;
-        pt.y = event.clientY;
-        let svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
-
+        const CTM = svg.getScreenCTM()
 
         return {
-            x: svgP.x,
-            y: svgP.y
+            x: (event.clientX - CTM.e - transformMatrix[4]) / (CTM.a * transformMatrix[0]),
+            y: (event.clientY - CTM.f - transformMatrix[5]) / (CTM.d * transformMatrix[3])
         }
     }
 
@@ -212,23 +256,10 @@ export default class OfficeMap extends Component {
     }
 
     showEditMode() {
-        const lines = []
-
-        let index = 0
         if (this.props.editMode) {
-            const viewBox = this.state.viewBox
-            for (let i = 0; i < (viewBox.height / CELL_SIZE); i++) {
-                lines.push(<line key={`line_${index}`} x1={0} y1={i * CELL_SIZE + 1} x2={viewBox.width} y2={i * CELL_SIZE + 1} style={{ stroke: 'black', strokeWidth: 0.3 }} />)
-                index++
-            }
-
-            for (let i = 0; i < (viewBox.width / CELL_SIZE); i++) {
-                lines.push(<line key={`line_${index}`} x1={i * CELL_SIZE + 1} y1="0" x2={i * CELL_SIZE + 1} y2={viewBox.height} style={{ stroke: 'black', strokeWidth: 0.3 }} />)
-                index++
-            }
+            return (<rect x={0} y={0} width={CELL_QTY * CELL_SIZE} height={CELL_QTY * CELL_SIZE} fill="url(#pattern)" />)
         }
-
-        return lines;
+        return undefined
     }
 
     showDesks() {
@@ -299,8 +330,30 @@ export default class OfficeMap extends Component {
         }, chairDirection)
     }
 
+    showNavigator() {
+        if (this.props.showNavigator) {
+            return (<g id="navigator">
+                <circle cx="36" cy="36" r="32" fill="white" />
+
+                <path className="button_directional" onClick={() => this.pan(0, CELL_SIZE / (4 * transformMatrix[3]))} d="M128 320l128-128 128 128z" transform="translate(10 -13) scale(0.1 0.1)" />
+                <path className="button_directional" onClick={() => this.pan(0, -CELL_SIZE / (4 * transformMatrix[3]))} d="M128 192l128 128 128-128z" transform="translate(10 33) scale(0.1 0.1)" />
+                <path className="button_directional" onClick={() => this.pan(-CELL_SIZE / (4 * transformMatrix[0]), 0)} d="M192 128l128 128-128 128z" transform="translate(33 10) scale(0.1 0.1)" />
+                <path className="button_directional" onClick={() => this.pan(CELL_SIZE / (4 * transformMatrix[0]), 0)} d="M320 128L192 256l128 128z" transform="translate(-13 10) scale(0.1 0.1)" />
+
+                <rect className="button" x="16" y="16.5" width="17.5" height="8" transform="translate(-4 -5) scale(1.6 1.6)" onClick={() => this.zoom(0.75)} rx="1" ry="1" />
+                <rect className="button" x="16" y="26" width="17.5" height="8" transform="translate(-4 -5) scale(1.6 1.6)" onClick={() => this.zoom(1.25)} rx="1" ry="1" />
+                <rect class="plus-minus" x="23" y="19.5" width="4" height="1" transform="translate(-4 -4) scale(1.6 1.6)" />
+                <rect class="plus-minus" x="23" y="29" width="4" height="1" transform="translate(-4 -4) scale(1.6 1.6)" />
+                <rect class="plus-minus" x="24.5" y="27.5" width="1" height="4" transform="translate(-4 -4) scale(1.6 1.6)" />
+            </g>)
+        } else {
+            return undefined
+        }
+    }
+
     render() {
         const viewBox = this.state.viewBox
+        const transformMatrix = this.state.transformMatrix
         return (
             <svg id="svg"
                 viewBox={`${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`}
@@ -415,16 +468,17 @@ export default class OfficeMap extends Component {
                         <line x1="124" y1="78" x2="124" y2="83" style={{ stroke: 'black', strokeWidth: 0.5 }} />
                     </g>
                     {this.buildDesksDefinitions()}
+                    <pattern id="pattern" x="0" y="0" width={1 / CELL_QTY} height={1 / CELL_QTY}>
+                        <rect x="1" y="1" width={CELL_SIZE} height={CELL_SIZE} style={{ fill: "none", stroke: 'black', strokeWidth: 0.4 }} />
+                    </pattern>
                 </defs>
-
-                {this.showEditMode()}
-
-                <rect id="selectableRect" x={0} y={0} width="260" height="260" style={{ fill: '#d0d6f5', strokeWidth: 1, stroke: '#1a2980', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
-
-                {this.showDesks()}
-
-                <rect id="svgLastElement" x={0} y={0} width="0" height="0" />
-
+                <g id="matrix-group" transform="matrix(1 0 0 1 0 0)">
+                    <rect id="selectableRect" x={0} y={0} width="260" height="260" style={{ fill: '#d0d6f5', strokeWidth: 1, stroke: '#1a2980', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
+                    {this.showEditMode()}
+                    {this.showDesks()}
+                    <rect id="svgLastElement" x={0} y={0} width={0} height={0} />
+                </g>
+                {this.showNavigator()}
             </svg>)
     }
 }
