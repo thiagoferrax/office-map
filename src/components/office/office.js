@@ -22,8 +22,8 @@ export default class OfficeMap extends Component {
 
         const viewBox =
             OfficeMap.calculateViewBox(this.props.data,
-                this.props.minHorizontalSize,
-                this.props.minVerticalSize)
+                this.props.horizontalSize,
+                this.props.verticalSize)
 
         this.state = { ...INITIAL_STATE, viewBox }
     }
@@ -32,8 +32,8 @@ export default class OfficeMap extends Component {
         if (nextProps.data !== prevState.data) {
             const viewBox =
                 OfficeMap.calculateViewBox(nextProps.data,
-                    nextProps.minHorizontalSize,
-                    nextProps.minVerticalSize)
+                    nextProps.horizontalSize,
+                    nextProps.verticalSize)
             return { viewBox }
         } else {
             return null
@@ -86,18 +86,18 @@ export default class OfficeMap extends Component {
         $('#selectableRect').attr('y', 0)
     }
 
-    static calculateViewBox = memoize((data, minHorizontalSize, minVerticalSize) => {
+    static calculateViewBox = memoize((data, horizontalSize, verticalSize) => {
         const maximus = data && data.reduce((maximus, desk) => {
             maximus.x = Math.max(maximus.x, desk.x)
             maximus.y = Math.max(maximus.y, desk.y)
             return maximus
         }, { x: 0, y: 0 })
 
-        maximus.x = minHorizontalSize ? minHorizontalSize : Math.max(minHorizontalSize || 1, maximus.x)
-        maximus.y = minVerticalSize ? minVerticalSize : Math.max(minVerticalSize || 1, maximus.y)
+        maximus.x = horizontalSize ? horizontalSize : maximus.x + 1
+        maximus.y = verticalSize ? verticalSize : maximus.y + 1
 
-        const width = (maximus.x + 1) * CELL_SIZE + 2
-        const height = (maximus.y + 1) * CELL_SIZE + 2
+        const width = maximus.x * CELL_SIZE + 2
+        const height = maximus.y * CELL_SIZE + 2
 
         return { minX: 0, minY: 0, width, height }
     })
@@ -232,10 +232,8 @@ export default class OfficeMap extends Component {
             this.setState({ svg })
         }
 
-        let transformMatrix = this.state.transformMatrix
-
+        const transformMatrix = this.state.transformMatrix
         const CTM = svg.getScreenCTM()
-
         return {
             x: (event.clientX - CTM.e - transformMatrix[4]) / (CTM.a * transformMatrix[0]),
             y: (event.clientY - CTM.f - transformMatrix[5]) / (CTM.d * transformMatrix[3])
@@ -332,14 +330,15 @@ export default class OfficeMap extends Component {
 
     showNavigator() {
         if (this.props.showNavigator) {
+
+            const transformMatrix = this.state.transformMatrix
+
             return (<g id="navigator">
                 <circle cx="36" cy="36" r="32" fill="white" />
-
                 <path className="button_directional" onClick={() => this.pan(0, CELL_SIZE / (4 * transformMatrix[3]))} d="M128 320l128-128 128 128z" transform="translate(10 -13) scale(0.1 0.1)" />
                 <path className="button_directional" onClick={() => this.pan(0, -CELL_SIZE / (4 * transformMatrix[3]))} d="M128 192l128 128 128-128z" transform="translate(10 33) scale(0.1 0.1)" />
                 <path className="button_directional" onClick={() => this.pan(-CELL_SIZE / (4 * transformMatrix[0]), 0)} d="M192 128l128 128-128 128z" transform="translate(33 10) scale(0.1 0.1)" />
                 <path className="button_directional" onClick={() => this.pan(CELL_SIZE / (4 * transformMatrix[0]), 0)} d="M320 128L192 256l128 128z" transform="translate(-13 10) scale(0.1 0.1)" />
-
                 <rect className="button" x="16" y="16.5" width="17.5" height="8" transform="translate(-4 -5) scale(1.6 1.6)" onClick={() => this.zoom(0.75)} rx="1" ry="1" />
                 <rect className="button" x="16" y="26" width="17.5" height="8" transform="translate(-4 -5) scale(1.6 1.6)" onClick={() => this.zoom(1.25)} rx="1" ry="1" />
                 <rect class="plus-minus" x="23" y="19.5" width="4" height="1" transform="translate(-4 -4) scale(1.6 1.6)" />
