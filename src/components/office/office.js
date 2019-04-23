@@ -235,7 +235,7 @@ export default class OfficeMap extends Component {
             this.setState({ svg })
         }
 
-        const transformMatrix = this.state.transformMatrix
+        let transformMatrix = this.state.transformMatrix
 
         if(!transformMatrix) {
             transformMatrix = [1, 0, 0, 1, 0, 0]
