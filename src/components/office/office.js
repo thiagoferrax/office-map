@@ -6,14 +6,15 @@ import './office.css'
 const CELL_SIZE = 260
 const CELL_QTY = 25
 
-const INITIAL_STATE = { 
-        selectedElement: undefined, 
-        offset: { x: 0, y: 0 }, 
-        viewBox: undefined, 
-        svg: undefined, 
-        xPosition: undefined, 
-        yPosition: undefined, 
-        transformMatrix: [1, 0, 0, 1, 0, 0] }
+const INITIAL_STATE = {
+    selectedElement: undefined,
+    offset: { x: 0, y: 0 },
+    viewBox: undefined,
+    svg: undefined,
+    xPosition: undefined,
+    yPosition: undefined,
+    transformMatrix: [1, 0, 0, 1, 0, 0]
+}
 
 export default class OfficeMap extends Component {
 
@@ -330,21 +331,20 @@ export default class OfficeMap extends Component {
 
     showNavigator() {
         if (this.props.showNavigator) {
-
-            const transformMatrix = this.state.transformMatrix
-
-            return (<g id="navigator">
-                <circle cx="36" cy="36" r="32" fill="white" />
-                <path className="button_directional" onClick={() => this.pan(0, CELL_SIZE / (4 * transformMatrix[3]))} d="M128 320l128-128 128 128z" transform="translate(10 -13) scale(0.1 0.1)" />
-                <path className="button_directional" onClick={() => this.pan(0, -CELL_SIZE / (4 * transformMatrix[3]))} d="M128 192l128 128 128-128z" transform="translate(10 33) scale(0.1 0.1)" />
-                <path className="button_directional" onClick={() => this.pan(-CELL_SIZE / (4 * transformMatrix[0]), 0)} d="M192 128l128 128-128 128z" transform="translate(33 10) scale(0.1 0.1)" />
-                <path className="button_directional" onClick={() => this.pan(CELL_SIZE / (4 * transformMatrix[0]), 0)} d="M320 128L192 256l128 128z" transform="translate(-13 10) scale(0.1 0.1)" />
-                <rect className="button" x="16" y="16.5" width="17.5" height="8" transform="translate(-4 -5) scale(1.6 1.6)" onClick={() => this.zoom(0.75)} rx="1" ry="1" />
-                <rect className="button" x="16" y="26" width="17.5" height="8" transform="translate(-4 -5) scale(1.6 1.6)" onClick={() => this.zoom(1.25)} rx="1" ry="1" />
-                <rect class="plus-minus" x="23" y="19.5" width="4" height="1" transform="translate(-4 -4) scale(1.6 1.6)" />
-                <rect class="plus-minus" x="23" y="29" width="4" height="1" transform="translate(-4 -4) scale(1.6 1.6)" />
-                <rect class="plus-minus" x="24.5" y="27.5" width="1" height="4" transform="translate(-4 -4) scale(1.6 1.6)" />
-            </g>)
+            return (
+                <g id="navigator">
+                    <circle cx="36" cy="36" r="32" fill="white" />
+                    <path className="button_directional" onClick={() => this.pan(0, CELL_SIZE / 4)} d="M128 320l128-128 128 128z" transform="translate(10 -13) scale(0.1 0.1)" />
+                    <path className="button_directional" onClick={() => this.pan(0, -CELL_SIZE / 4)} d="M128 192l128 128 128-128z" transform="translate(10 33) scale(0.1 0.1)" />
+                    <path className="button_directional" onClick={() => this.pan(-CELL_SIZE / 4, 0)} d="M192 128l128 128-128 128z" transform="translate(33 10) scale(0.1 0.1)" />
+                    <path className="button_directional" onClick={() => this.pan(CELL_SIZE / 4, 0)} d="M320 128L192 256l128 128z" transform="translate(-13 10) scale(0.1 0.1)" />
+                    <rect className="button" x="16" y="16.5" width="17.5" height="8" transform="translate(-4 -5) scale(1.6 1.6)" onClick={() => this.zoom(0.75)} rx="1" ry="1" />
+                    <rect className="button" x="16" y="26" width="17.5" height="8" transform="translate(-4 -5) scale(1.6 1.6)" onClick={() => this.zoom(1.25)} rx="1" ry="1" />
+                    <rect class="plus-minus" x="23" y="19.5" width="4" height="1" transform="translate(-4 -4) scale(1.6 1.6)" />
+                    <rect class="plus-minus" x="23" y="29" width="4" height="1" transform="translate(-4 -4) scale(1.6 1.6)" />
+                    <rect class="plus-minus" x="24.5" y="27.5" width="1" height="4" transform="translate(-4 -4) scale(1.6 1.6)" />
+                </g>
+            )
         } else {
             return undefined
         }
