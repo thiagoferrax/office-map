@@ -13,7 +13,7 @@ const INITIAL_STATE = {
     svg: undefined,
     xPosition: undefined,
     yPosition: undefined,
-    transformMatrix: undefined
+    transformMatrix: [1, 0, 0, 1, 0, 0]
 }
 
 export default class OfficeMap extends Component {
@@ -26,9 +26,7 @@ export default class OfficeMap extends Component {
                 this.props.horizontalSize,
                 this.props.verticalSize)
 
-        const transformMatrix = [1, 0, 0, 1, 0, 0]
-
-        this.state = { ...INITIAL_STATE, viewBox, transformMatrix }
+        this.state = { ...INITIAL_STATE, viewBox}
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -37,7 +35,8 @@ export default class OfficeMap extends Component {
                 OfficeMap.calculateViewBox(nextProps.data,
                     nextProps.horizontalSize,
                     nextProps.verticalSize)
-            return { viewBox }
+                                
+            return { viewBox, transformMatrix: INITIAL_STATE.transformMatrix }
         } else {
             return null
         }
@@ -235,12 +234,7 @@ export default class OfficeMap extends Component {
             this.setState({ svg })
         }
 
-        let transformMatrix = this.state.transformMatrix
-
-        if(!transformMatrix) {
-            transformMatrix = [1, 0, 0, 1, 0, 0]
-            this.setState({transformMatrix})
-        }
+        const transformMatrix = this.state.transformMatrix
 
         const CTM = svg.getScreenCTM()
         return {
@@ -348,9 +342,9 @@ export default class OfficeMap extends Component {
                     <path className="button_directional" onClick={() => this.pan(CELL_SIZE / 4, 0)} d="M320 128L192 256l128 128z" transform="translate(-13 10) scale(0.1 0.1)" />
                     <rect className="button" x="16" y="16.5" width="17.5" height="8" transform="translate(-4 -5) scale(1.6 1.6)" onClick={() => this.zoom(0.75)} rx="1" ry="1" />
                     <rect className="button" x="16" y="26" width="17.5" height="8" transform="translate(-4 -5) scale(1.6 1.6)" onClick={() => this.zoom(1.25)} rx="1" ry="1" />
-                    <rect class="plus-minus" x="23" y="19.5" width="4" height="1" transform="translate(-4 -4) scale(1.6 1.6)" />
-                    <rect class="plus-minus" x="23" y="29" width="4" height="1" transform="translate(-4 -4) scale(1.6 1.6)" />
-                    <rect class="plus-minus" x="24.5" y="27.5" width="1" height="4" transform="translate(-4 -4) scale(1.6 1.6)" />
+                    <rect className="plus-minus" x="23" y="19.5" width="4" height="1" transform="translate(-4 -4) scale(1.6 1.6)" />
+                    <rect className="plus-minus" x="23" y="29" width="4" height="1" transform="translate(-4 -4) scale(1.6 1.6)" />
+                    <rect className="plus-minus" x="24.5" y="27.5" width="1" height="4" transform="translate(-4 -4) scale(1.6 1.6)" />
                 </g>
             )
         } else {
@@ -360,7 +354,6 @@ export default class OfficeMap extends Component {
 
     render() {
         const viewBox = this.state.viewBox
-        const transformMatrix = this.state.transformMatrix
         return (
             <svg id="svg"
                 viewBox={`${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`}
