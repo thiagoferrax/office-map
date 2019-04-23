@@ -13,7 +13,7 @@ const INITIAL_STATE = {
     svg: undefined,
     xPosition: undefined,
     yPosition: undefined,
-    transformMatrix: [1, 0, 0, 1, 0, 0]
+    transformMatrix: undefined
 }
 
 export default class OfficeMap extends Component {
@@ -26,7 +26,9 @@ export default class OfficeMap extends Component {
                 this.props.horizontalSize,
                 this.props.verticalSize)
 
-        this.state = { ...INITIAL_STATE, viewBox }
+        const transformMatrix = [1, 0, 0, 1, 0, 0]
+
+        this.state = { ...INITIAL_STATE, viewBox, transformMatrix }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -234,6 +236,12 @@ export default class OfficeMap extends Component {
         }
 
         const transformMatrix = this.state.transformMatrix
+
+        if(!transformMatrix) {
+            transformMatrix = [1, 0, 0, 1, 0, 0]
+            this.setState({transformMatrix})
+        }
+
         const CTM = svg.getScreenCTM()
         return {
             x: (event.clientX - CTM.e - transformMatrix[4]) / (CTM.a * transformMatrix[0]),
