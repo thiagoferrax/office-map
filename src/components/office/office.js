@@ -329,20 +329,17 @@ export default class OfficeMap extends Component {
             const viewBox = this.state.viewBox
             return (
                 <g id="navigator">
-                    <circle cx={viewBox.width -51} cy="51" r="40" fill="rgb(255, 255, 255, 0.9)" stroke="#bbbbbb" strokeWidth="1"/>
-                    <path className="button_directional" onClick={() => this.pan(0, CELL_SIZE / 4)} d="M128 320l128-128 128 128z" transform={`translate(${viewBox.width -76.5} 0.8) scale(0.1 0.1)`} />
-                    <path className="button_directional" onClick={() => this.pan(0, -CELL_SIZE / 4)} d="M128 192l128 128 128-128z" transform={`translate(${viewBox.width -76.5} 50) scale(0.1 0.1)`} />
-                    <path className="button_directional" onClick={() => this.pan(-CELL_SIZE / 4, 0)} d="M192 128l128 128-128 128z" transform={`translate(${viewBox.width -52} 25.5) scale(0.1 0.1)`} />
-                    <path className="button_directional" onClick={() => this.pan(CELL_SIZE / 4, 0)} d="M320 128L192 256l128 128z" transform={`translate(${viewBox.width -101.2} 25.5) scale(0.1 0.1)`} />
+                    <circle cx={viewBox.width -51} cy="51" r="40" fill="rgb(255, 255, 255, 0.9)" stroke="#333333" strokeWidth="2"/>                    
 
-                    <circle cx={viewBox.width -51} cy="51" r="22" fill="rgb(255, 255, 255, 0.5)" />
+                    <path className="button_directional" onClick={() => this.pan(0, CELL_SIZE / 4)} d="M128 320l128-128 128 128z" transform={`translate(${viewBox.width -76.5} -2) scale(0.1 0.1)`} />
+                    <path className="button_directional" onClick={() => this.pan(0, -CELL_SIZE / 4)} d="M128 192l128 128 128-128z" transform={`translate(${viewBox.width -76.5} 53) scale(0.1 0.1)`} />
+                    <path className="button_directional" onClick={() => this.pan(-CELL_SIZE / 4, 0)} d="M192 128l128 128-128 128z" transform={`translate(${viewBox.width -49} 25.5) scale(0.1 0.1)`} />
+                    <path className="button_directional" onClick={() => this.pan(CELL_SIZE / 4, 0)} d="M320 128L192 256l128 128z" transform={`translate(${viewBox.width -104.2} 25.5) scale(0.1 0.1)`} />
 
-                    <rect className="button" x={viewBox.width -428} y="26.5" width="15.5" height="7" transform="translate(-4 -5) scale(1.6 1.6)" onClick={() => this.zoom(0.75)} rx="1" ry="1" />
-                    <rect className="button" x={viewBox.width -428} y="36" width="15.5" height="7" transform="translate(-4 -5) scale(1.6 1.6)" onClick={() => this.zoom(1.25)} rx="1" ry="1" />
+                    <circle cx={viewBox.width -51} cy="51" r="23" fill="rgb(255, 255, 255, 0.5)" />
 
-                    <rect className="plus-minus" x={viewBox.width -422} y="29" width="4" height="1" transform="translate(-4 -4) scale(1.6 1.6)" />
-                    <rect className="plus-minus" x={viewBox.width -422}  y="38.5" width="4" height="1" transform="translate(-4 -4) scale(1.6 1.6)" />
-                    <rect className="plus-minus" x={viewBox.width -420.5}  y="27.5" width="1" height="4" transform="translate(-4 -4) scale(1.6 1.6)" />
+                    <path onClick={() => this.zoom(0.75)} className="button" d="M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm90.5 224H272v74.5c0 8.8-7.2 16-16 16-4.4 0-8.4-1.8-11.3-4.7-2.9-2.9-4.7-6.9-4.7-11.3V272h-74.5c-4.4 0-8.4-1.8-11.3-4.7-2.9-2.9-4.7-6.9-4.7-11.3 0-8.8 7.2-16 16-16H240v-74.5c0-8.8 7.2-16 16-16s16 7.2 16 16V240h74.5c8.8 0 16 7.2 16 16s-7.2 16-16 16z" transform={`translate(${viewBox.width -61} 32) scale(0.04 0.04)`}/>
+                    <path onClick={() => this.zoom(1.25)} className="button" d="M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm90.5 224h-181c-8.5 0-16-6-16-16s7.2-16 16-16h181c8.8 0 16 7.2 16 16s-7.2 16-16 16z" transform={`translate(${viewBox.width -61} 50) scale(0.04 0.04)`}/>                                        
                 </g>
             )
         } else {
