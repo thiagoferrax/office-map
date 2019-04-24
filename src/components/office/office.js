@@ -35,7 +35,7 @@ export default class OfficeMap extends Component {
                 OfficeMap.calculateViewBox(nextProps.data,
                     nextProps.horizontalSize,
                     nextProps.verticalSize)
-                                
+
             return { viewBox, transformMatrix: INITIAL_STATE.transformMatrix }
         } else {
             return null
@@ -61,8 +61,8 @@ export default class OfficeMap extends Component {
         for (let i = 0; i < 6; i++) {
             transformMatrix[i] *= scale;
         }
-        transformMatrix[4] += (1 - scale) * centerX;
-        transformMatrix[5] += (1 - scale) * centerY;
+        //transformMatrix[4] += (1 - scale) * centerX;
+        //transformMatrix[5] += (1 - scale) * centerY;
 
         this.setMatrix(transformMatrix)
     }
@@ -74,11 +74,10 @@ export default class OfficeMap extends Component {
             this.setState({ svg })
         }
         if (svg) {
-            const newMatrix = "matrix(" + transformMatrix.join(' ') + ")";
-            var matrixGroup = svg.getElementById("matrix-group")
-            matrixGroup.setAttributeNS(null, "transform", newMatrix);
-
             this.setState({ transformMatrix })
+
+            var matrixGroup = svg.getElementById("matrix-group")
+            matrixGroup.setAttributeNS(null, "transform", "matrix(" + transformMatrix.join(' ') + ")")
         }
     }
 
@@ -180,7 +179,7 @@ export default class OfficeMap extends Component {
     endDrag(event) {
         const selectedElement = this.state.selectedElement
         if (selectedElement) {
-            var coord = this.getMousePosition(event)
+            var coord = this.getMousePosition(event)            
 
             const xPosition = parseInt(coord.x / CELL_SIZE)
             const yPosition = parseInt(coord.y / CELL_SIZE)
@@ -233,13 +232,17 @@ export default class OfficeMap extends Component {
             svg = document.getElementById("svg")
             this.setState({ svg })
         }
+        var matrixGroup = svg.getElementById("matrix-group")
+        const matrixTransform = matrixGroup.getScreenCTM().inverse()
 
-        const transformMatrix = this.state.transformMatrix
+        const pt = svg.createSVGPoint();
+        pt.x = event.clientX;
+        pt.y = event.clientY;
+        var globalPoint = pt.matrixTransform(matrixTransform)
 
-        const CTM = svg.getScreenCTM()
         return {
-            x: (event.clientX - CTM.e - transformMatrix[4]) / (CTM.a * transformMatrix[0]),
-            y: (event.clientY - CTM.f - transformMatrix[5]) / (CTM.d * transformMatrix[3])
+            x: globalPoint.x,
+            y: globalPoint.y
         }
     }
 
@@ -350,6 +353,11 @@ export default class OfficeMap extends Component {
         } else {
             return undefined
         }
+    }
+
+    getTransformMatrix() {
+        const transformMatrix = this.state.transformMatrix
+        return "matrix(" + transformMatrix.join(' ') + ")"
     }
 
     render() {
@@ -469,10 +477,10 @@ export default class OfficeMap extends Component {
                     </g>
                     {this.buildDesksDefinitions()}
                     <pattern id="pattern" x="0" y="0" width={1 / CELL_QTY} height={1 / CELL_QTY}>
-                        <rect x="1" y="1" width={CELL_SIZE} height={CELL_SIZE} style={{ fill: "none", stroke: 'black', strokeWidth: 0.4 }} />
+                        <rect x="1" y="1" width={CELL_SIZE} height={CELL_SIZE} style={{ fill: "none", stroke: 'black', strokeWidth: 0.2 }} />
                     </pattern>
                 </defs>
-                <g id="matrix-group" transform="matrix(1 0 0 1 0 0)">
+                <g id="matrix-group" transform={this.getTransformMatrix()}>
                     <rect id="selectableRect" x={0} y={0} width="260" height="260" style={{ fill: '#d0d6f5', strokeWidth: 1, stroke: '#1a2980', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
                     {this.showEditMode()}
                     {this.showDesks()}
