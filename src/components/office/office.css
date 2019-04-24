@@ -1,10 +1,10 @@
 .compass {
     fill: white;
-    stroke: #333333;
+    stroke: #5a5a5a;
     stroke-width: 1;
 }
 .button {
-    fill: #333333;
+    fill: #5a5a5a;
 }
 
 .button:hover {
@@ -12,7 +12,7 @@
 }
 
 .button_directional {
-    fill: #333333;
+    fill: #5a5a5a;
 }
 .button_directional:hover {
     fill: #1a2980;
