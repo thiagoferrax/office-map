@@ -53,31 +53,23 @@ export default class OfficeMap extends Component {
 
     zoom(scale) {
         const transformMatrix = this.state.transformMatrix
-        const viewBox = this.state.viewBox
-
-        const centerX = parseFloat(viewBox.width) / 2;
-        const centerY = parseFloat(viewBox.height) / 2;
-
         for (let i = 0; i < 6; i++) {
             transformMatrix[i] *= scale;
         }
-        //transformMatrix[4] += (1 - scale) * centerX;
-        //transformMatrix[5] += (1 - scale) * centerY;
-
         this.setMatrix(transformMatrix)
     }
 
     setMatrix(transformMatrix) {
         let svg = this.state.svg
         if (!svg) {
-            svg = document.getElementById("svg")
+            svg = document.getElementById(`svg_${this.props.id}`)
             this.setState({ svg })
         }
         if (svg) {
             this.setState({ transformMatrix })
 
-            var matrixGroup = svg.getElementById("matrix-group")
-            matrixGroup.setAttributeNS(null, "transform", "matrix(" + transformMatrix.join(' ') + ")")
+            var matrixGroup = svg.getElementById(`matrix-group_${this.props.id}`)
+            matrixGroup.setAttributeNS(null, "transform", this.formatMatrix(transformMatrix))
         }
     }
 
@@ -105,15 +97,13 @@ export default class OfficeMap extends Component {
 
     mountFieldsMessage = (equipment, fields) => {
         return equipment && fields && fields.reduce((message, field, index) => {
-            if (message && field && equipment[field]) {
-                message += ' - '
+            if(field && equipment[field]) {
+                if (message) {
+                    message += ' - '
+                }
+                message += index === 0 ? equipment[field].toUpperCase() : equipment[field]
             }
-            if (field && equipment[field] && index === 0) {
-                message += equipment[field].toUpperCase()
-            } else if (field && equipment[field]) {
-                message += equipment[field]
-            }
-            if (index === fields.length - 1) {
+            if (message && (index === fields.length - 1)) {
                 message += '\n'
             }
             return message
@@ -229,10 +219,10 @@ export default class OfficeMap extends Component {
     getMousePosition(event) {
         let svg = this.state.svg
         if (!svg) {
-            svg = document.getElementById("svg")
+            svg = document.getElementById(`svg_${this.props.id}`)
             this.setState({ svg })
         }
-        var matrixGroup = svg.getElementById("matrix-group")
+        var matrixGroup = svg.getElementById(`matrix-group_${this.props.id}`)
         const matrixTransform = matrixGroup.getScreenCTM().inverse()
 
         const pt = svg.createSVGPoint();
@@ -336,18 +326,23 @@ export default class OfficeMap extends Component {
 
     showNavigator() {
         if (this.props.showNavigator) {
+            const viewBox = this.state.viewBox
             return (
                 <g id="navigator">
-                    <circle cx="36" cy="36" r="32" fill="white" />
-                    <path className="button_directional" onClick={() => this.pan(0, CELL_SIZE / 4)} d="M128 320l128-128 128 128z" transform="translate(10 -13) scale(0.1 0.1)" />
-                    <path className="button_directional" onClick={() => this.pan(0, -CELL_SIZE / 4)} d="M128 192l128 128 128-128z" transform="translate(10 33) scale(0.1 0.1)" />
-                    <path className="button_directional" onClick={() => this.pan(-CELL_SIZE / 4, 0)} d="M192 128l128 128-128 128z" transform="translate(33 10) scale(0.1 0.1)" />
-                    <path className="button_directional" onClick={() => this.pan(CELL_SIZE / 4, 0)} d="M320 128L192 256l128 128z" transform="translate(-13 10) scale(0.1 0.1)" />
-                    <rect className="button" x="16" y="16.5" width="17.5" height="8" transform="translate(-4 -5) scale(1.6 1.6)" onClick={() => this.zoom(0.75)} rx="1" ry="1" />
-                    <rect className="button" x="16" y="26" width="17.5" height="8" transform="translate(-4 -5) scale(1.6 1.6)" onClick={() => this.zoom(1.25)} rx="1" ry="1" />
-                    <rect className="plus-minus" x="23" y="19.5" width="4" height="1" transform="translate(-4 -4) scale(1.6 1.6)" />
-                    <rect className="plus-minus" x="23" y="29" width="4" height="1" transform="translate(-4 -4) scale(1.6 1.6)" />
-                    <rect className="plus-minus" x="24.5" y="27.5" width="1" height="4" transform="translate(-4 -4) scale(1.6 1.6)" />
+                    <circle cx={viewBox.width -51} cy="51" r="40" fill="rgb(255, 255, 255, 0.9)" stroke="#bbbbbb" strokeWidth="1"/>
+                    <path className="button_directional" onClick={() => this.pan(0, CELL_SIZE / 4)} d="M128 320l128-128 128 128z" transform={`translate(${viewBox.width -76.5} 0.8) scale(0.1 0.1)`} />
+                    <path className="button_directional" onClick={() => this.pan(0, -CELL_SIZE / 4)} d="M128 192l128 128 128-128z" transform={`translate(${viewBox.width -76.5} 50) scale(0.1 0.1)`} />
+                    <path className="button_directional" onClick={() => this.pan(-CELL_SIZE / 4, 0)} d="M192 128l128 128-128 128z" transform={`translate(${viewBox.width -52} 25.5) scale(0.1 0.1)`} />
+                    <path className="button_directional" onClick={() => this.pan(CELL_SIZE / 4, 0)} d="M320 128L192 256l128 128z" transform={`translate(${viewBox.width -101.2} 25.5) scale(0.1 0.1)`} />
+
+                    <circle cx={viewBox.width -51} cy="51" r="22" fill="rgb(255, 255, 255, 0.5)" />
+
+                    <rect className="button" x={viewBox.width -428} y="26.5" width="15.5" height="7" transform="translate(-4 -5) scale(1.6 1.6)" onClick={() => this.zoom(0.75)} rx="1" ry="1" />
+                    <rect className="button" x={viewBox.width -428} y="36" width="15.5" height="7" transform="translate(-4 -5) scale(1.6 1.6)" onClick={() => this.zoom(1.25)} rx="1" ry="1" />
+
+                    <rect className="plus-minus" x={viewBox.width -422} y="29" width="4" height="1" transform="translate(-4 -4) scale(1.6 1.6)" />
+                    <rect className="plus-minus" x={viewBox.width -422}  y="38.5" width="4" height="1" transform="translate(-4 -4) scale(1.6 1.6)" />
+                    <rect className="plus-minus" x={viewBox.width -420.5}  y="27.5" width="1" height="4" transform="translate(-4 -4) scale(1.6 1.6)" />
                 </g>
             )
         } else {
@@ -355,15 +350,13 @@ export default class OfficeMap extends Component {
         }
     }
 
-    getTransformMatrix() {
-        const transformMatrix = this.state.transformMatrix
-        return "matrix(" + transformMatrix.join(' ') + ")"
-    }
+    formatMatrix = transformMatrix => "matrix(" + transformMatrix.join(' ') + ")"
 
     render() {
         const viewBox = this.state.viewBox
+        const transformMatrix = this.state.transformMatrix
         return (
-            <svg id="svg"
+            <svg id={`svg_${this.props.id}`}
                 viewBox={`${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`}
                 style={{ background: 'linear-gradient(to bottom right, #ece9e6, #ffffff)' }}>
                 <defs>
@@ -480,7 +473,7 @@ export default class OfficeMap extends Component {
                         <rect x="1" y="1" width={CELL_SIZE} height={CELL_SIZE} style={{ fill: "none", stroke: 'black', strokeWidth: 0.2 }} />
                     </pattern>
                 </defs>
-                <g id="matrix-group" transform={this.getTransformMatrix()}>
+                <g id={`matrix-group_${this.props.id}`} transform={this.formatMatrix(transformMatrix)}>
                     <rect id="selectableRect" x={0} y={0} width="260" height="260" style={{ fill: '#d0d6f5', strokeWidth: 1, stroke: '#1a2980', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
                     {this.showEditMode()}
                     {this.showDesks()}
