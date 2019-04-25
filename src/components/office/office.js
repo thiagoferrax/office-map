@@ -251,7 +251,7 @@ export default class OfficeMap extends Component {
 
     showEditMode() {
         if (this.props.editMode) {
-            return (<rect x={0} y={0} width={CELL_QTY * CELL_SIZE} height={CELL_QTY * CELL_SIZE} fill="url(#pattern)" />)
+            return ([<rect x={0} y={0} width={CELL_QTY * CELL_SIZE} height={CELL_QTY * CELL_SIZE} fill="url(#pattern)" />, <rect x={0} y={0} width={CELL_QTY * CELL_SIZE} height={CELL_QTY * CELL_SIZE} fill="url(#pattern_big)" />])
         }
         return undefined
     }
@@ -329,12 +329,15 @@ export default class OfficeMap extends Component {
             const viewBox = this.state.viewBox
             return (
                 <g id="navigator">
-                    <circle cx={viewBox.width - 70} cy="70" r="62" fill="rgb(255, 255, 255, 0.7)" stroke="#ededed" strokeWidth="2" />
+                    <circle cx={viewBox.width - 70} cy="70" r="65" fill="none" stroke="#f7f7f7" strokeWidth="1" />
+                    <circle cx={viewBox.width - 70} cy="70" r="64" fill="none" stroke="#ededed" strokeWidth="1" />
+                    <circle cx={viewBox.width - 70} cy="70" r="63" fill="none" stroke="#e1e1e1" strokeWidth="1" />
+                    <circle cx={viewBox.width - 70} cy="70" r="62" fill="rgb(255, 255, 255, 0.9)" stroke="#d4d4d4" strokeWidth="1" />
                     <path className="button_directional" onClick={() => this.pan(0, CELL_SIZE / 4)} d="M128 320l128-128 128 128z" transform={`translate(${viewBox.width - 108.5} -10) scale(0.15 0.15)`} />
                     <path className="button_directional" onClick={() => this.pan(0, -CELL_SIZE / 4)} d="M128 192l128 128 128-128z" transform={`translate(${viewBox.width - 108.5} 73.3) scale(0.15 0.15)`} />
                     <path className="button_directional" onClick={() => this.pan(-CELL_SIZE / 4, 0)} d="M192 128l128 128-128 128z" transform={`translate(${viewBox.width - 66.7} 31.5) scale(0.15 0.15)`} />
                     <path className="button_directional" onClick={() => this.pan(CELL_SIZE / 4, 0)} d="M320 128L192 256l128 128z" transform={`translate(${viewBox.width - 150} 31.5) scale(0.15 0.15)`} />
-                    <circle cx={viewBox.width - 70} cy="70" r="36" fill="rgb(255, 255, 255, 0.3)" />
+                    <circle cx={viewBox.width - 70} cy="70" r="36" fill="rgb(255, 255, 255, 0.4)" />
                     <path onClick={() => this.zoom(1.25)} className="button" d="M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm90.5 224H272v74.5c0 8.8-7.2 16-16 16-4.4 0-8.4-1.8-11.3-4.7-2.9-2.9-4.7-6.9-4.7-11.3V272h-74.5c-4.4 0-8.4-1.8-11.3-4.7-2.9-2.9-4.7-6.9-4.7-11.3 0-8.8 7.2-16 16-16H240v-74.5c0-8.8 7.2-16 16-16s16 7.2 16 16V240h74.5c8.8 0 16 7.2 16 16s-7.2 16-16 16z" transform={`translate(${viewBox.width - 85.5} 39.2) scale(0.06 0.06)`} />
                     <path onClick={() => this.zoom(0.75)} className="button" d="M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm90.5 224h-181c-8.5 0-16-6-16-16s7.2-16 16-16h181c8.8 0 16 7.2 16 16s-7.2 16-16 16z" transform={`translate(${viewBox.width - 85.5} 70) scale(0.06 0.06)`} />
                 </g>
@@ -463,6 +466,9 @@ export default class OfficeMap extends Component {
                         <line x1="124" y1="78" x2="124" y2="83" style={{ stroke: 'black', strokeWidth: 0.5 }} />
                     </g>
                     {this.buildDesksDefinitions()}
+                    <pattern id="pattern_big" x="0" y="0" width={1 / (CELL_QTY)} height={1 / (CELL_QTY)}>
+                        <rect x="1" y="1" width={CELL_SIZE} height={CELL_SIZE} style={{ fill: "none", stroke: 'black', strokeWidth: 0.2 }} />
+                    </pattern>
                     <pattern id="pattern" x="0" y="0" width={1 / (CELL_QTY * 5)} height={1 / (CELL_QTY * 5)}>
                         <rect x="1" y="1" width={CELL_SIZE} height={CELL_SIZE} style={{ fill: "none", stroke: 'black', strokeWidth: 0.2 }} />
                     </pattern>
