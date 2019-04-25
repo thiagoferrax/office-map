@@ -14,9 +14,11 @@
 .button_directional {
     fill: #6e6e6e;
 }
+
 .button_directional:hover {
     fill: #1a2980;
 }
+
 .plus-minus {
     fill: white;
     pointer-events: none;
