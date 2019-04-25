@@ -5,7 +5,7 @@
 [![NPM](https://img.shields.io/npm/v/office-map.svg)](https://www.npmjs.com/package/office-map) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg"></a>
 
-![myOffice](https://user-images.githubusercontent.com/43149895/56084982-2a15ba00-5e12-11e9-9235-99637c07b275.gif)
+![myOffice](https://user-images.githubusercontent.com/43149895/56732731-a70b3280-6734-11e9-8ed4-000591fd360d.gif)
 
 ## Install
 
@@ -161,7 +161,11 @@ export default class App extends Component {
           data={data}
           onSelect={desk => this.setState({ desk })}
           onMove={desk => this.setState({ desk })}
-          editMode={true} />
+          editMode={true} 
+          showNavigator={true} 
+          horizontalSize={5}
+          verticalSize={3} />
+
       </div>
     )
   }

@@ -329,7 +329,7 @@ export default class OfficeMap extends Component {
             const viewBox = this.state.viewBox
             return (
                 <g id="navigator">
-                    <circle cx={viewBox.width - 70} cy="70" r="60" fill="rgb(255, 255, 255, 0.9)" stroke="#333333" strokeWidth="2" />
+                    <circle cx={viewBox.width - 70} cy="70" r="65" fill="rgb(255, 255, 255, 0.7)" stroke="#333333" strokeWidth="1" />
                     <path className="button_directional" onClick={() => this.pan(0, CELL_SIZE / 4)} d="M128 320l128-128 128 128z" transform={`translate(${viewBox.width - 108.5} -10) scale(0.15 0.15)`} />
                     <path className="button_directional" onClick={() => this.pan(0, -CELL_SIZE / 4)} d="M128 192l128 128 128-128z" transform={`translate(${viewBox.width - 108.5} 73.3) scale(0.15 0.15)`} />
                     <path className="button_directional" onClick={() => this.pan(-CELL_SIZE / 4, 0)} d="M192 128l128 128-128 128z" transform={`translate(${viewBox.width - 66.7} 31.5) scale(0.15 0.15)`} />

@@ -145,7 +145,9 @@ export default class App extends Component {
           onMove={desk => this.setState({ desk })}
           editMode={true} 
           showNavigator={true} 
-          horizontalSize={6} />
+          horizontalSize={5}
+          verticalSize={3} />
+
       </div>
     )
   }
