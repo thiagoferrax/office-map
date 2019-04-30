@@ -60,17 +60,7 @@ export default class OfficeMap extends Component {
     }
 
     setMatrix(transformMatrix) {
-        let svg = this.state.svg
-        if (!svg) {
-            svg = document.getElementById(`svg_${this.props.id}`)
-            this.setState({ svg })
-        }
-        if (svg) {
-            this.setState({ transformMatrix })
-
-            var matrixGroup = svg.getElementById(`matrix-group_${this.props.id}`)
-            matrixGroup.setAttributeNS(null, "transform", this.formatMatrix(transformMatrix))
-        }
+       this.setState({ transformMatrix })
     }
 
     unSelectDesk() {
@@ -251,7 +241,9 @@ export default class OfficeMap extends Component {
 
     showEditMode() {
         if (this.props.editMode) {
-            return ([<rect x={0} y={0} width={CELL_QTY * CELL_SIZE} height={CELL_QTY * CELL_SIZE} fill="url(#pattern)" />, <rect x={0} y={0} width={CELL_QTY * CELL_SIZE} height={CELL_QTY * CELL_SIZE} fill="url(#pattern_big)" />])
+            return ([
+                <rect key="pattern_1" x={0} y={0} width={CELL_QTY * CELL_SIZE} height={CELL_QTY * CELL_SIZE} fill="url(#pattern)" />, 
+                <rect key="pattern_2" x={0} y={0} width={CELL_QTY * CELL_SIZE} height={CELL_QTY * CELL_SIZE} fill="url(#pattern_big)" />])
         }
         return undefined
     }
