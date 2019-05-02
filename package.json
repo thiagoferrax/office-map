@@ -1,6 +1,6 @@
 {
   "name": "office-map",
-  "version": "1.0.68",
+  "version": "1.0.69",
   "description": "Get a graphical react component that can create an office map to control key equipment information.",
   "author": "thiagoferrax",
   "license": "MIT",
@@ -59,7 +59,7 @@
     "dist"
   ],
   "dependencies": {
-    "jquery": "3.3.1",
-    "memoize-one": "5.0.1"
+    "jquery": "3.4.1",
+    "memoize-one": "5.0.4"
   }
 }
