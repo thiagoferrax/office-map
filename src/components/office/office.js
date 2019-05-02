@@ -27,6 +27,8 @@ export default class OfficeMap extends Component {
                 this.props.verticalSize)
 
         this.state = { ...INITIAL_STATE, viewBox }
+
+        console.log('constructor transformMatrix', this.state.transformMatrix)
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -35,11 +37,16 @@ export default class OfficeMap extends Component {
                 OfficeMap.calculateViewBox(nextProps.data,
                     nextProps.horizontalSize,
                     nextProps.verticalSize)
-
-            return { viewBox, transformMatrix: INITIAL_STATE.transformMatrix }
+            const transformMatrix = INITIAL_STATE.transformMatrix                    
+            console.log('getDerivedStateFromProps transformMatrix', transformMatrix)
+            return { viewBox, transformMatrix }            
         } else {
             return null
         }
+    }
+
+    componentWillUnmount() {
+        console.log('componentWillUnmount')
     }
 
     pan(dx, dy) {
@@ -48,6 +55,7 @@ export default class OfficeMap extends Component {
         transformMatrix[4] += dx;
         transformMatrix[5] += dy;
 
+        console.log('pan transformMatrix', transformMatrix)
         this.setMatrix(transformMatrix)
     }
 
@@ -56,6 +64,8 @@ export default class OfficeMap extends Component {
         for (let i = 0; i < 6; i++) {
             transformMatrix[i] *= scale;
         }
+
+        console.log('zoom transformMatrix', transformMatrix)
         this.setMatrix(transformMatrix)
     }
 
