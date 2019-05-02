@@ -11,8 +11,7 @@ const INITIAL_STATE = {
     offset: { x: 0, y: 0 },
     viewBox: undefined,
     xPosition: undefined,
-    yPosition: undefined,
-    transformMatrix: [1, 0, 0, 1, 0, 0]
+    yPosition: undefined
 }
 
 export default class OfficeMap extends Component {
@@ -21,13 +20,11 @@ export default class OfficeMap extends Component {
         super(props)
 
         const viewBox =
-            OfficeMap.calculateViewBox(this.props.data,
-                this.props.horizontalSize,
-                this.props.verticalSize)
+            OfficeMap.calculateViewBox(props.data,
+                props.horizontalSize,
+                props.verticalSize)
 
-        this.state = { ...INITIAL_STATE, viewBox }
-
-        console.log('constructor transformMatrix', this.state.transformMatrix)
+        this.state = { ...INITIAL_STATE, viewBox, transformMatrix: [1, 0, 0, 1, 0, 0] }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -36,16 +33,10 @@ export default class OfficeMap extends Component {
                 OfficeMap.calculateViewBox(nextProps.data,
                     nextProps.horizontalSize,
                     nextProps.verticalSize)
-            const transformMatrix = INITIAL_STATE.transformMatrix
-            console.log('getDerivedStateFromProps transformMatrix', transformMatrix)
-            return { viewBox, transformMatrix }
+            return { viewBox }
         } else {
             return null
         }
-    }
-
-    componentWillUnmount() {
-        console.log('componentWillUnmount')
     }
 
     pan(dx, dy) {
@@ -55,7 +46,6 @@ export default class OfficeMap extends Component {
             transformMatrix[4] += dx;
             transformMatrix[5] += dy;
 
-            console.log('pan transformMatrix', transformMatrix)
             return { transformMatrix }
         })
     }
@@ -68,15 +58,14 @@ export default class OfficeMap extends Component {
                 transformMatrix[i] *= scale
             }
 
-            console.log('zoom transformMatrix', transformMatrix)
             return { transformMatrix }
         })
     }
 
     unSelectDesk() {
-        $('#selectableRect').css('visibility', 'hidden')
-        $('#selectableRect').attr('x', 0)
-        $('#selectableRect').attr('y', 0)
+        $(`#selectableRect_${this.props.id}`).css('visibility', 'hidden')
+        $(`#selectableRect_${this.props.id}`).attr('x', 0)
+        $(`#selectableRect_${this.props.id}`).attr('y', 0)
     }
 
     static calculateViewBox = memoize((data, horizontalSize, verticalSize) => {
@@ -131,16 +120,16 @@ export default class OfficeMap extends Component {
             const x = event.target.x.baseVal.value
             const y = event.target.y.baseVal.value
 
-            const xRect = $('#selectableRect').attr('x')
-            const yRect = $('#selectableRect').attr('y')
-            const visibility = $('#selectableRect').css('visibility')
+            const xRect = $(`#selectableRect_${this.props.id}`).attr('x')
+            const yRect = $(`#selectableRect_${this.props.id}`).attr('y')
+            const visibility = $(`#selectableRect_${this.props.id}`).css('visibility')
 
             if (x === +xRect && y === +yRect && visibility === 'visible') {
                 this.unSelectDesk()
             } else {
-                $('#selectableRect').css('visibility', 'visible')
-                $('#selectableRect').attr('x', x)
-                $('#selectableRect').attr('y', y)
+                $(`#selectableRect_${this.props.id}`).css('visibility', 'visible')
+                $(`#selectableRect_${this.props.id}`).attr('x', x)
+                $(`#selectableRect_${this.props.id}`).attr('y', y)
 
                 const desk = this.props.data.filter(d => d.id === +event.target.id)[0]
 
@@ -151,8 +140,8 @@ export default class OfficeMap extends Component {
 
     startDrag = (event) => {
         const selectedElement = event.target
-
-        $(`#${selectedElement.id}`).insertBefore("#svgLastElement")
+        
+        $(`#${selectedElement.id}`).insertBefore(`#svgLastElement_${this.props.id}`)
 
         let offset = this.getMousePosition(event)
 
@@ -162,9 +151,7 @@ export default class OfficeMap extends Component {
         offset.x -= selectedElement.getAttributeNS(null, "x")
         offset.y -= selectedElement.getAttributeNS(null, "y")
 
-        this.setState(currentState => {
-            return { selectedElement, offset, xPosition, yPosition }
-        })
+        this.setState({ selectedElement, offset, xPosition, yPosition })
     }
 
     endDrag(event) {
@@ -185,9 +172,7 @@ export default class OfficeMap extends Component {
             const yPositionBefore = this.state.yPosition
 
 
-            this.setState(currentState => {
-                return { selectedElement: undefined, xPosition: undefined, yPosition: undefined }
-            })
+            this.setState({ selectedElement: undefined, xPosition: undefined, yPosition: undefined })
 
             if (this.props.onMove &&
                 (xPosition !== xPositionBefore ||
@@ -197,8 +182,8 @@ export default class OfficeMap extends Component {
                 this.props.onMove({ ...desk, x: xPosition, y: yPosition })
 
                 if (this.props.onSelect) {
-                    const x = parseInt($('#selectableRect').attr('x') / CELL_SIZE)
-                    const y = parseInt($('#selectableRect').attr('y') / CELL_SIZE)
+                    const x = parseInt($(`#selectableRect_${this.props.id}`).attr('x') / CELL_SIZE)
+                    const y = parseInt($(`#selectableRect_${this.props.id}`).attr('y') / CELL_SIZE)
 
                     if (x === xPositionBefore && y === yPositionBefore) {
                         this.unSelectDesk()
@@ -206,9 +191,9 @@ export default class OfficeMap extends Component {
                 }
 
             } else if (this.props.onSelect) {
-                const x = parseInt($('#selectableRect').attr('x') / CELL_SIZE)
-                const y = parseInt($('#selectableRect').attr('y') / CELL_SIZE)
-                const visibility = $('#selectableRect').css('visibility')
+                const x = parseInt($(`#selectableRect_${this.props.id}`).attr('x') / CELL_SIZE)
+                const y = parseInt($(`#selectableRect_${this.props.id}`).attr('y') / CELL_SIZE)
+                const visibility = $(`#selectableRect_${this.props.id}`).css('visibility')
 
                 if (x === xPositionBefore && y === yPositionBefore
                     && visibility === 'visible') {
@@ -477,10 +462,10 @@ export default class OfficeMap extends Component {
 
                 </defs>
                 <g id={`matrix-group_${this.props.id}`} transform={this.formatMatrix(transformMatrix)}>
-                    <rect id="selectableRect" x={0} y={0} width="260" height="260" style={{ fill: '#d0d6f5', strokeWidth: 1, stroke: '#1a2980', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
+                    <rect id={`selectableRect_${this.props.id}`} x={0} y={0} width="260" height="260" style={{ fill: '#d0d6f5', strokeWidth: 1, stroke: '#1a2980', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
                     {this.showEditMode()}
                     {this.showDesks()}
-                    <rect id="svgLastElement" x={0} y={0} width={0} height={0} />
+                    <rect id={`svgLastElement_${this.props.id}`} x={0} y={0} width={0} height={0} />
                 </g>
                 {this.showNavigator()}
             </svg>)
