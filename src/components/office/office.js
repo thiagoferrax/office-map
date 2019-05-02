@@ -10,7 +10,6 @@ const INITIAL_STATE = {
     selectedElement: undefined,
     offset: { x: 0, y: 0 },
     viewBox: undefined,
-    svg: undefined,
     xPosition: undefined,
     yPosition: undefined,
     transformMatrix: [1, 0, 0, 1, 0, 0]
@@ -163,8 +162,9 @@ export default class OfficeMap extends Component {
         offset.x -= selectedElement.getAttributeNS(null, "x")
         offset.y -= selectedElement.getAttributeNS(null, "y")
 
-
-        this.setState({ selectedElement, offset, xPosition, yPosition })
+        this.setState(currentState => {
+            return { selectedElement, offset, xPosition, yPosition }
+        })
     }
 
     endDrag(event) {
@@ -184,7 +184,10 @@ export default class OfficeMap extends Component {
             const xPositionBefore = this.state.xPosition
             const yPositionBefore = this.state.yPosition
 
-            this.setState({ selectedElement: undefined, xPosition: undefined, yPosition: undefined })
+
+            this.setState(currentState => {
+                return { selectedElement: undefined, xPosition: undefined, yPosition: undefined }
+            })
 
             if (this.props.onMove &&
                 (xPosition !== xPositionBefore ||
@@ -218,17 +221,15 @@ export default class OfficeMap extends Component {
     }
 
     getMousePosition(event) {
-        let svg = this.state.svg
-        if (!svg) {
-            svg = document.getElementById(`svg_${this.props.id}`)
-            this.setState({ svg })
-        }
+        let svg = document.getElementById(`svg_${this.props.id}`)
         var matrixGroup = svg.getElementById(`matrix-group_${this.props.id}`)
+     
         const matrixTransform = matrixGroup.getScreenCTM().inverse()
-
+    
         const pt = svg.createSVGPoint();
         pt.x = event.clientX;
         pt.y = event.clientY;
+    
         var globalPoint = pt.matrixTransform(matrixTransform)
 
         return {
@@ -240,6 +241,7 @@ export default class OfficeMap extends Component {
     drag(event) {
         const selectedElement = this.state.selectedElement
         const offset = this.state.offset
+
         if (selectedElement) {
             var coord = this.getMousePosition(event)
             let dx = coord.x - offset.x
