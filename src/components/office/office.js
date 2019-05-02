@@ -10,10 +10,9 @@ const INITIAL_STATE = {
     selectedElement: undefined,
     offset: { x: 0, y: 0 },
     viewBox: undefined,
-    xPosition: undefined,
-    yPosition: undefined,
     svg: undefined,
-    matrixGroup: undefined
+    xPosition: undefined,
+    yPosition: undefined
 }
 
 export default class OfficeMap extends Component {
@@ -22,43 +21,50 @@ export default class OfficeMap extends Component {
         super(props)
 
         const viewBox =
-            OfficeMap.calculateViewBox(props.data,
-                props.horizontalSize,
-                props.verticalSize)
-
+            OfficeMap.calculateViewBox(this.props.data,
+                this.props.horizontalSize,
+                this.props.verticalSize)
         this.state = { ...INITIAL_STATE, viewBox, transformMatrix: [1, 0, 0, 1, 0, 0] }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.data !== prevState.data) {
             const viewBox =
-                OfficeMap.calculateViewBox(nextProps.data, nextProps.horizontalSize, nextProps.verticalSize)
-            return { viewBox }
+                OfficeMap.calculateViewBox(nextProps.data,
+                    nextProps.horizontalSize,
+                    nextProps.verticalSize)
+
+            return { viewBox, transformMatrix: INITIAL_STATE.transformMatrix }
+        } else {
+            return null
         }
-        return null
     }
 
     pan(dx, dy) {
         const transformMatrix = this.state.transformMatrix
+
         transformMatrix[4] += dx;
         transformMatrix[5] += dy;
 
-        this.setState({ transformMatrix })
+        this.setMatrix(transformMatrix)
     }
 
     zoom(scale) {
         const transformMatrix = this.state.transformMatrix
-
         for (let i = 0; i < 6; i++) {
-            transformMatrix[i] *= scale
+            transformMatrix[i] *= scale;
         }
+        this.setMatrix(transformMatrix)
+    }
+
+    setMatrix(transformMatrix) {
         this.setState({ transformMatrix })
     }
 
     unSelectDesk() {
-        $(`#selectableRect_${this.props.id}`).css('visibility', 'hidden')
-        $(`#selectableRect_${this.props.id}`).attr('x', 0)
-        $(`#selectableRect_${this.props.id}`).attr('y', 0)
+        $('#selectableRect').css('visibility', 'hidden')
+        $('#selectableRect').attr('x', 0)
+        $('#selectableRect').attr('y', 0)
     }
 
     static calculateViewBox = memoize((data, horizontalSize, verticalSize) => {
@@ -113,16 +119,16 @@ export default class OfficeMap extends Component {
             const x = event.target.x.baseVal.value
             const y = event.target.y.baseVal.value
 
-            const xRect = $(`#selectableRect_${this.props.id}`).attr('x')
-            const yRect = $(`#selectableRect_${this.props.id}`).attr('y')
-            const visibility = $(`#selectableRect_${this.props.id}`).css('visibility')
+            const xRect = $('#selectableRect').attr('x')
+            const yRect = $('#selectableRect').attr('y')
+            const visibility = $('#selectableRect').css('visibility')
 
             if (x === +xRect && y === +yRect && visibility === 'visible') {
                 this.unSelectDesk()
             } else {
-                $(`#selectableRect_${this.props.id}`).css('visibility', 'visible')
-                $(`#selectableRect_${this.props.id}`).attr('x', x)
-                $(`#selectableRect_${this.props.id}`).attr('y', y)
+                $('#selectableRect').css('visibility', 'visible')
+                $('#selectableRect').attr('x', x)
+                $('#selectableRect').attr('y', y)
 
                 const desk = this.props.data.filter(d => d.id === +event.target.id)[0]
 
@@ -134,7 +140,7 @@ export default class OfficeMap extends Component {
     startDrag = (event) => {
         const selectedElement = event.target
 
-        $(`#${selectedElement.id}`).insertBefore(`#svgLastElement_${this.props.id}`)
+        $(`#${selectedElement.id}`).insertBefore("#svgLastElement")
 
         let offset = this.getMousePosition(event)
 
@@ -143,6 +149,7 @@ export default class OfficeMap extends Component {
 
         offset.x -= selectedElement.getAttributeNS(null, "x")
         offset.y -= selectedElement.getAttributeNS(null, "y")
+
 
         this.setState({ selectedElement, offset, xPosition, yPosition })
     }
@@ -164,7 +171,6 @@ export default class OfficeMap extends Component {
             const xPositionBefore = this.state.xPosition
             const yPositionBefore = this.state.yPosition
 
-
             this.setState({ selectedElement: undefined, xPosition: undefined, yPosition: undefined })
 
             if (this.props.onMove &&
@@ -175,8 +181,8 @@ export default class OfficeMap extends Component {
                 this.props.onMove({ ...desk, x: xPosition, y: yPosition })
 
                 if (this.props.onSelect) {
-                    const x = parseInt($(`#selectableRect_${this.props.id}`).attr('x') / CELL_SIZE)
-                    const y = parseInt($(`#selectableRect_${this.props.id}`).attr('y') / CELL_SIZE)
+                    const x = parseInt($('#selectableRect').attr('x') / CELL_SIZE)
+                    const y = parseInt($('#selectableRect').attr('y') / CELL_SIZE)
 
                     if (x === xPositionBefore && y === yPositionBefore) {
                         this.unSelectDesk()
@@ -184,9 +190,9 @@ export default class OfficeMap extends Component {
                 }
 
             } else if (this.props.onSelect) {
-                const x = parseInt($(`#selectableRect_${this.props.id}`).attr('x') / CELL_SIZE)
-                const y = parseInt($(`#selectableRect_${this.props.id}`).attr('y') / CELL_SIZE)
-                const visibility = $(`#selectableRect_${this.props.id}`).css('visibility')
+                const x = parseInt($('#selectableRect').attr('x') / CELL_SIZE)
+                const y = parseInt($('#selectableRect').attr('y') / CELL_SIZE)
+                const visibility = $('#selectableRect').css('visibility')
 
                 if (x === xPositionBefore && y === yPositionBefore
                     && visibility === 'visible') {
@@ -200,21 +206,17 @@ export default class OfficeMap extends Component {
 
     getMousePosition(event) {
         let svg = this.state.svg
-        let matrixGroup = this.state.matrixGroup
-        if(!svg) {
+        if (!svg) {
             svg = document.getElementById(`svg_${this.props.id}`)
-            matrixGroup = svg.getElementById(`matrix-group_${this.props.id}`)
-
-            this.setState({svg, matrixGroup})
+            this.setState({ svg })
         }
-        
+        var matrixGroup = svg.getElementById(`matrix-group_${this.props.id}`)
         const matrixTransform = matrixGroup.getScreenCTM().inverse()
-        
+
         const pt = svg.createSVGPoint();
         pt.x = event.clientX;
         pt.y = event.clientY;
-
-        const globalPoint = pt.matrixTransform(matrixTransform)
+        var globalPoint = pt.matrixTransform(matrixTransform)
 
         return {
             x: globalPoint.x,
@@ -225,7 +227,6 @@ export default class OfficeMap extends Component {
     drag(event) {
         const selectedElement = this.state.selectedElement
         const offset = this.state.offset
-
         if (selectedElement) {
             var coord = this.getMousePosition(event)
             let dx = coord.x - offset.x
@@ -254,6 +255,7 @@ export default class OfficeMap extends Component {
                 href={`#${this.getDeskId(desk)}`}
                 x={desk.x * CELL_SIZE}
                 y={desk.y * CELL_SIZE}
+                className="clickable draggable"
                 onMouseDown={this.props.onMove ? event => this.startDrag(event) : () => { }}
                 onMouseMove={this.props.onMove ? event => this.drag(event) : () => { }}
                 onMouseUp={this.props.onMove ? event => this.endDrag(event) : () => { }}
@@ -265,7 +267,7 @@ export default class OfficeMap extends Component {
     getDeskComponentsTypes(desk) {
         const deskComponents = desk.equipments ? desk.equipments.map(e => e.type ? e.type.toLowerCase() : '') : []
         const definedComponents = ['chair', 'drawer', 'desk', 'keyboard', 'mouse', 'monitor', 'phone', 'cpu', 'desktop', 'laptop']
-        return definedComponents.filter(component => deskComponents.includes(component))
+        return definedComponents.filter(component => ['desk'].concat(deskComponents).includes(component))
     }
 
     getDeskComponents(desk) {
@@ -459,11 +461,11 @@ export default class OfficeMap extends Component {
                     </pattern>
 
                 </defs>
-                <g id={`matrix-group_${this.props.id}`} transform={this.formatMatrix(transformMatrix)}>
-                    <rect id={`selectableRect_${this.props.id}`} x={0} y={0} width="260" height="260" style={{ fill: '#d0d6f5', strokeWidth: 1, stroke: '#1a2980', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
+                <g id={`matrix-group_${this.props.id}`} transform={this.formatMatrix(transformMatrix || [1, 0, 0, 1, 0, 0])}>
+                    <rect id="selectableRect" x={0} y={0} width="260" height="260" style={{ fill: '#d0d6f5', strokeWidth: 1, stroke: '#1a2980', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
                     {this.showEditMode()}
                     {this.showDesks()}
-                    <rect id={`svgLastElement_${this.props.id}`} x={0} y={0} width={0} height={0} />
+                    <rect id="svgLastElement" x={0} y={0} width={0} height={0} />
                 </g>
                 {this.showNavigator()}
             </svg>)
