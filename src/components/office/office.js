@@ -54,9 +54,9 @@ export default class OfficeMap extends Component {
     }
 
     unSelectDesk() {
-        $(`#selectableRect_${this.props.id}`).css('visibility', 'hidden')
-        $(`#selectableRect_${this.props.id}`).attr('x', 0)
-        $(`#selectableRect_${this.props.id}`).attr('y', 0)
+        $('#selectableRect').css('visibility', 'hidden')
+        $('#selectableRect').attr('x', 0)
+        $('#selectableRect').attr('y', 0)
     }
 
     static calculateViewBox = memoize((data, horizontalSize, verticalSize) => {
@@ -111,16 +111,16 @@ export default class OfficeMap extends Component {
             const x = event.target.x.baseVal.value
             const y = event.target.y.baseVal.value
 
-            const xRect = $(`#selectableRect_${this.props.id}`).attr('x')
-            const yRect = $(`#selectableRect_${this.props.id}`).attr('y')
-            const visibility = $(`#selectableRect_${this.props.id}`).css('visibility')
+            const xRect = $('#selectableRect').attr('x')
+            const yRect = $('#selectableRect').attr('y')
+            const visibility = $('#selectableRect').css('visibility')
 
             if (x === +xRect && y === +yRect && visibility === 'visible') {
                 this.unSelectDesk()
             } else {
-                $(`#selectableRect_${this.props.id}`).css('visibility', 'visible')
-                $(`#selectableRect_${this.props.id}`).attr('x', x)
-                $(`#selectableRect_${this.props.id}`).attr('y', y)
+                $('#selectableRect').css('visibility', 'visible')
+                $('#selectableRect').attr('x', x)
+                $('#selectableRect').attr('y', y)
 
                 const desk = this.props.data.filter(d => d.id === +event.target.id)[0]
 
@@ -173,8 +173,8 @@ export default class OfficeMap extends Component {
                 this.props.onMove({ ...desk, x: xPosition, y: yPosition })
 
                 if (this.props.onSelect) {
-                    const x = parseInt($(`#selectableRect_${this.props.id}`).attr('x') / CELL_SIZE)
-                    const y = parseInt($(`#selectableRect_${this.props.id}`).attr('y') / CELL_SIZE)
+                    const x = parseInt($('#selectableRect').attr('x') / CELL_SIZE)
+                    const y = parseInt($('#selectableRect').attr('y') / CELL_SIZE)
 
                     if (x === xPositionBefore && y === yPositionBefore) {
                         this.unSelectDesk()
@@ -182,9 +182,9 @@ export default class OfficeMap extends Component {
                 }
 
             } else if (this.props.onSelect) {
-                const x = parseInt($(`#selectableRect_${this.props.id}`).attr('x') / CELL_SIZE)
-                const y = parseInt($(`#selectableRect_${this.props.id}`).attr('y') / CELL_SIZE)
-                const visibility = $(`#selectableRect_${this.props.id}`).css('visibility')
+                const x = parseInt($('#selectableRect').attr('x') / CELL_SIZE)
+                const y = parseInt($('#selectableRect').attr('y') / CELL_SIZE)
+                const visibility = $('#selectableRect').css('visibility')
 
                 if (x === xPositionBefore && y === yPositionBefore
                     && visibility === 'visible') {
@@ -453,7 +453,7 @@ export default class OfficeMap extends Component {
 
                 </defs>
                 <g id={`matrix-group_${this.props.id}`} transform={this.formatMatrix(transformMatrix)}>
-                    <rect id={`selectableRect_${this.props.id}`} x={0} y={0} width="260" height="260" style={{ fill: '#d0d6f5', strokeWidth: 1, stroke: '#1a2980', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
+                    <rect id={'selectableRect'} x={0} y={0} width="260" height="260" style={{ fill: '#d0d6f5', strokeWidth: 1, stroke: '#1a2980', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
                     {this.showEditMode()}
                     {this.showDesks()}
                     <rect id={`svgLastElement_${this.props.id}`} x={0} y={0} width={0} height={0} />
