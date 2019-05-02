@@ -30,36 +30,27 @@ export default class OfficeMap extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.data !== prevState.data) {
             const viewBox =
-                OfficeMap.calculateViewBox(nextProps.data,
-                    nextProps.horizontalSize,
-                    nextProps.verticalSize)
+                OfficeMap.calculateViewBox(nextProps.data, nextProps.horizontalSize, nextProps.verticalSize)
             return { viewBox }
-        } else {
-            return null
         }
+        return null
     }
 
     pan(dx, dy) {
-        this.setState(currentState => {
-            const transformMatrix = currentState.transformMatrix
+        const transformMatrix = this.state.transformMatrix
+        transformMatrix[4] += dx;
+        transformMatrix[5] += dy;
 
-            transformMatrix[4] += dx;
-            transformMatrix[5] += dy;
-
-            return { transformMatrix }
-        })
+        this.setState({ transformMatrix })
     }
 
     zoom(scale) {
-        this.setState(currentState => {
-            const transformMatrix = currentState.transformMatrix
+        const transformMatrix = this.state.transformMatrix
 
-            for (let i = 0; i < 6; i++) {
-                transformMatrix[i] *= scale
-            }
-
-            return { transformMatrix }
-        })
+        for (let i = 0; i < 6; i++) {
+            transformMatrix[i] *= scale
+        }
+        this.setState({ transformMatrix })
     }
 
     unSelectDesk() {
@@ -140,7 +131,7 @@ export default class OfficeMap extends Component {
 
     startDrag = (event) => {
         const selectedElement = event.target
-        
+
         $(`#${selectedElement.id}`).insertBefore(`#svgLastElement_${this.props.id}`)
 
         let offset = this.getMousePosition(event)
@@ -208,13 +199,13 @@ export default class OfficeMap extends Component {
     getMousePosition(event) {
         let svg = document.getElementById(`svg_${this.props.id}`)
         var matrixGroup = svg.getElementById(`matrix-group_${this.props.id}`)
-     
+
         const matrixTransform = matrixGroup.getScreenCTM().inverse()
-    
+
         const pt = svg.createSVGPoint();
         pt.x = event.clientX;
         pt.y = event.clientY;
-    
+
         var globalPoint = pt.matrixTransform(matrixTransform)
 
         return {
@@ -267,7 +258,7 @@ export default class OfficeMap extends Component {
     getDeskComponentsTypes(desk) {
         const deskComponents = desk.equipments ? desk.equipments.map(e => e.type ? e.type.toLowerCase() : '') : []
         const definedComponents = ['chair', 'drawer', 'desk', 'keyboard', 'mouse', 'monitor', 'phone', 'cpu', 'desktop', 'laptop']
-        return definedComponents.filter(component => ['desk'].concat(deskComponents).includes(component))
+        return definedComponents.filter(component => deskComponents.includes(component))
     }
 
     getDeskComponents(desk) {
