@@ -12,7 +12,8 @@ const INITIAL_STATE = {
     viewBox: undefined,
     svg: undefined,
     xPosition: undefined,
-    yPosition: undefined
+    yPosition: undefined,
+    transformMatrix: undefined
 }
 
 export default class OfficeMap extends Component {
@@ -22,7 +23,9 @@ export default class OfficeMap extends Component {
 
         const viewBox = OfficeMap.calculateViewBox(props.data, props.horizontalSize, props.verticalSize)
 
-        this.state = { ...INITIAL_STATE, viewBox, transformMatrix: [1, 0, 0, 1, 0, 0] }
+        const transformMatrix = [1, 0, 0, 1, 0, 0]
+
+        this.state = { ...INITIAL_STATE, viewBox, transformMatrix }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -32,7 +35,7 @@ export default class OfficeMap extends Component {
                     nextProps.horizontalSize,
                     nextProps.verticalSize)
 
-            return { viewBox, transformMatrix: INITIAL_STATE.transformMatrix }
+            return { viewBox }
         } else {
             return null
         }
