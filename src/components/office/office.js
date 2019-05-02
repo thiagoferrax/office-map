@@ -37,9 +37,9 @@ export default class OfficeMap extends Component {
                 OfficeMap.calculateViewBox(nextProps.data,
                     nextProps.horizontalSize,
                     nextProps.verticalSize)
-            const transformMatrix = INITIAL_STATE.transformMatrix                    
+            const transformMatrix = INITIAL_STATE.transformMatrix
             console.log('getDerivedStateFromProps transformMatrix', transformMatrix)
-            return { viewBox, transformMatrix }            
+            return { viewBox, transformMatrix }
         } else {
             return null
         }
@@ -50,27 +50,28 @@ export default class OfficeMap extends Component {
     }
 
     pan(dx, dy) {
-        const transformMatrix = this.state.transformMatrix
+        this.setState(currentState => {
+            const transformMatrix = currentState.transformMatrix
 
-        transformMatrix[4] += dx;
-        transformMatrix[5] += dy;
+            transformMatrix[4] += dx;
+            transformMatrix[5] += dy;
 
-        console.log('pan transformMatrix', transformMatrix)
-        this.setMatrix(transformMatrix)
+            console.log('pan transformMatrix', transformMatrix)
+            return { transformMatrix }
+        })
     }
 
     zoom(scale) {
-        const transformMatrix = this.state.transformMatrix
-        for (let i = 0; i < 6; i++) {
-            transformMatrix[i] *= scale;
-        }
+        this.setState(currentState => {
+            const transformMatrix = currentState.transformMatrix
 
-        console.log('zoom transformMatrix', transformMatrix)
-        this.setMatrix(transformMatrix)
-    }
+            for (let i = 0; i < 6; i++) {
+                transformMatrix[i] *= scale
+            }
 
-    setMatrix(transformMatrix) {
-       this.setState({ transformMatrix })
+            console.log('zoom transformMatrix', transformMatrix)
+            return { transformMatrix }
+        })
     }
 
     unSelectDesk() {
@@ -252,7 +253,7 @@ export default class OfficeMap extends Component {
     showEditMode() {
         if (this.props.editMode) {
             return ([
-                <rect key="pattern_1" x={0} y={0} width={CELL_QTY * CELL_SIZE} height={CELL_QTY * CELL_SIZE} fill="url(#pattern)" />, 
+                <rect key="pattern_1" x={0} y={0} width={CELL_QTY * CELL_SIZE} height={CELL_QTY * CELL_SIZE} fill="url(#pattern)" />,
                 <rect key="pattern_2" x={0} y={0} width={CELL_QTY * CELL_SIZE} height={CELL_QTY * CELL_SIZE} fill="url(#pattern_big)" />])
         }
         return undefined
@@ -471,7 +472,7 @@ export default class OfficeMap extends Component {
                     <pattern id="pattern" x="0" y="0" width={1 / (CELL_QTY * 5)} height={1 / (CELL_QTY * 5)}>
                         <rect x="1" y="1" width={CELL_SIZE} height={CELL_SIZE} style={{ fill: "none", stroke: 'black', strokeWidth: 0.1 }} />
                     </pattern>
-                    
+
                 </defs>
                 <g id={`matrix-group_${this.props.id}`} transform={this.formatMatrix(transformMatrix)}>
                     <rect id="selectableRect" x={0} y={0} width="260" height="260" style={{ fill: '#d0d6f5', strokeWidth: 1, stroke: '#1a2980', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
