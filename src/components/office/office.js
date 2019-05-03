@@ -85,7 +85,7 @@ export default class OfficeMap extends Component {
                 if (message) {
                     message += ' - '
                 }
-                message += index === 0 ? equipment[field].toUpperCase() : equipment[field]
+                message += index === 0 ? equipment[field].charAt(0).toUpperCase() + equipment[field].slice(1) : equipment[field]
             }
             if (message && (index === fields.length - 1)) {
                 message += '\n'
@@ -100,14 +100,14 @@ export default class OfficeMap extends Component {
         const equipments = desk.equipments || []
         let equipmentsInfo = equipments.reduce((message, equipment) => {
             if (fields && fields.length && equipment[fields[0]]) {
-                message += message ? "" : `DESK ${desk.id}\n`
+                message += message ? "" : `Workstation ${desk.id}\n`
                 message += this.mountFieldsMessage(equipment, fields)
             }
 
             return message
         }, "")
 
-        return equipmentsInfo || `DESK ${desk.id}`
+        return equipmentsInfo || `Workstation ${desk.id}`
     }
 
     selectDesk = (event) => {
