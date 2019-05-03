@@ -158,7 +158,8 @@ export default class App extends Component {
           editMode={true} 
           showNavigator={true} 
           horizontalSize={5}
-          verticalSize={3} />
+          verticalSize={3} 
+          idSelected={2}/>
       </div>
     )
   }

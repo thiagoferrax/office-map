@@ -100,7 +100,7 @@ export default class OfficeMap extends Component {
         const equipments = desk.equipments || []
         let equipmentsInfo = equipments.reduce((message, equipment) => {
             if (fields && fields.length && equipment[fields[0]]) {
-                message += message ? "" : `Workstation ${desk.id}\n`
+                message += message ? "" : `# Workstation ${desk.id}\n`
                 message += this.mountFieldsMessage(equipment, fields)
             }
 
@@ -246,7 +246,7 @@ export default class OfficeMap extends Component {
 
     showDesks() {
         return this.props.data && this.props.data.map(desk =>
-            (<use
+            (<use 
                 id={desk.id}
                 style={this.props.onMove ? { cursor: 'grab' } : {}}
                 key={`key_${desk.id}`}
@@ -332,6 +332,24 @@ export default class OfficeMap extends Component {
     }
 
     formatMatrix = transformMatrix => "matrix(" + transformMatrix.join(' ') + ")"
+
+    showSelectableRect() {
+        const {idSelected} = this.props
+        let x = 0
+        let y = 0
+
+        let style = { fill: '#d0d6f5', strokeWidth: 1, stroke: '#1a2980', visibility: 'hidden' }
+        if(idSelected) {
+            const desks = this.props.data.filter(desk => desk.id === idSelected)         
+            if(desks && desks[0]) {
+                x = desks[0].x * CELL_SIZE     
+                y = desks[0].y * CELL_SIZE     
+            }
+                
+            style = { fill: '#d0d6f5', strokeWidth: 1, stroke: '#1a2980', visibility: 'visible' }
+        }
+        return <rect id="selectableRect" x={x} y={y} width="260" height="260" style={style} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
+    }
 
     render() {
         const viewBox = this.state.viewBox
@@ -459,7 +477,7 @@ export default class OfficeMap extends Component {
 
                 </defs>
                 <g id={`matrix-group_${this.props.id}`} transform={this.formatMatrix(transformMatrix || [1, 0, 0, 1, 0, 0])}>
-                    <rect id="selectableRect" x={0} y={0} width="260" height="260" style={{ fill: '#d0d6f5', strokeWidth: 1, stroke: '#1a2980', visibility: 'hidden' }} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
+                    {this.showSelectableRect()}
                     {this.showEditMode()}
                     {this.showDesks()}
                     <rect id="svgLastElement" x={0} y={0} width={0} height={0} />
