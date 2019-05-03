@@ -11,9 +11,10 @@ const INITIAL_STATE = {
     offset: { x: 0, y: 0 },
     viewBox: undefined,
     svg: undefined,
+    matrixGroup: undefined,
     xPosition: undefined,
     yPosition: undefined,
-    transformMatrix: undefined
+    transformMatrix: [1, 0, 0, 1, 0, 0]
 }
 
 export default class OfficeMap extends Component {
@@ -23,9 +24,7 @@ export default class OfficeMap extends Component {
 
         const viewBox = OfficeMap.calculateViewBox(props.data, props.horizontalSize, props.verticalSize)
 
-        const transformMatrix = [1, 0, 0, 1, 0, 0]
-
-        this.state = { ...INITIAL_STATE, viewBox, transformMatrix }
+        this.state = { ...INITIAL_STATE, viewBox }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -47,7 +46,7 @@ export default class OfficeMap extends Component {
         transformMatrix[4] += dx;
         transformMatrix[5] += dy;
 
-        this.setMatrix(transformMatrix)
+        this.setState({ transformMatrix })
     }
 
     zoom(scale) {
@@ -55,10 +54,6 @@ export default class OfficeMap extends Component {
         for (let i = 0; i < 6; i++) {
             transformMatrix[i] *= scale;
         }
-        this.setMatrix(transformMatrix)
-    }
-
-    setMatrix(transformMatrix) {
         this.setState({ transformMatrix })
     }
 
@@ -207,11 +202,13 @@ export default class OfficeMap extends Component {
 
     getMousePosition(event) {
         let svg = this.state.svg
+        let matrixGroup = this.state.matrixGroup
         if (!svg) {
             svg = document.getElementById(`svg_${this.props.id}`)
-            this.setState({ svg })
+            matrixGroup = svg.getElementById(`matrix-group_${this.props.id}`)
+
+            this.setState({ svg, matrixGroup })
         }
-        var matrixGroup = svg.getElementById(`matrix-group_${this.props.id}`)
         const matrixTransform = matrixGroup.getScreenCTM().inverse()
 
         const pt = svg.createSVGPoint();
@@ -256,7 +253,6 @@ export default class OfficeMap extends Component {
                 href={`#${this.getDeskId(desk)}`}
                 x={desk.x * CELL_SIZE}
                 y={desk.y * CELL_SIZE}
-                className="clickable draggable"
                 onMouseDown={this.props.onMove ? event => this.startDrag(event) : () => { }}
                 onMouseMove={this.props.onMove ? event => this.drag(event) : () => { }}
                 onMouseUp={this.props.onMove ? event => this.endDrag(event) : () => { }}
