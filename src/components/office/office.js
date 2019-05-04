@@ -340,13 +340,12 @@ export default class OfficeMap extends Component {
 
         let style = { fill: '#d0d6f5', strokeWidth: 1, stroke: '#1a2980', visibility: 'hidden' }
         if(idSelected) {
-            const desks = this.props.data.filter(desk => desk.id === idSelected)         
+            const desks = this.props.data.filter(desk => desk.id === +idSelected)         
             if(desks && desks[0]) {
                 x = desks[0].x * CELL_SIZE     
                 y = desks[0].y * CELL_SIZE     
+                style = { fill: '#d0d6f5', strokeWidth: 1, stroke: '#1a2980', visibility: 'visible' }
             }
-                
-            style = { fill: '#d0d6f5', strokeWidth: 1, stroke: '#1a2980', visibility: 'visible' }
         }
         return <rect id="selectableRect" x={x} y={y} width="260" height="260" style={style} transform="translate(1 1)" rx="1" ry="1" onClick={this.unSelectDesk} />
     }
